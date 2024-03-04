@@ -1,9 +1,18 @@
+import { createWriteStream, readFileSync } from "fs";
+import ytdl from 'ytdl-core';
 
-const fs = require('fs');
-const ytdl = require('ytdl-core');
+type DownloadData = {
+	url: string;
+	title: string;
+};
 
-const videoId = fs.readFileSync('dumps/urls.txt', 'utf8');
-const filename = fs.readFileSync('dumps/dest.txt', 'utf8');
+const data: DownloadData = JSON.parse(
+	readFileSync("dumps/download.json", "utf8")
+);
 
-ytdl(videoId,{quality: 'highestvideo'}).pipe(fs.createWriteStream(`dumps/${filename}_video.mp4`));
-ytdl(videoId,{quality: 'highestaudio'}).pipe(fs.createWriteStream(`dumps/${filename}_audio.mp3`));
+ytdl(data.url, { quality: "highestvideo" }).pipe(
+	createWriteStream(`dumps/${data.title}_video.mp4`)
+);
+ytdl(data.url, { quality: "highestaudio" }).pipe(
+	createWriteStream(`dumps/${data.title}_audio.mp3`)
+);
