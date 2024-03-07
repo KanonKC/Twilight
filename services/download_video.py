@@ -5,6 +5,12 @@ import json
 import os
 import datetime
 
+# สักวันจะได้ใช้
+# th = u'[ก-ฮ]+'
+
+def secondToBytes(seconds):
+    return seconds * 60 * 1920 * 1080
+
 def generate_date():
     return datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
 
