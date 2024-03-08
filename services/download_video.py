@@ -8,13 +8,19 @@ import datetime
 # สักวันจะได้ใช้
 # th = u'[ก-ฮ]+'
 
-def secondToBytes(seconds):
-    return seconds * 60 * 1920 * 1080
+def convertToSeconds(time):
+    time = time.split(":")
+    if len(time) == 3:
+        return int(time[0]) * 3600 + int(time[1]) * 60 + int(time[2])
+    elif len(time) == 2:
+        return int(time[0]) * 60 + int(time[1])
+    else:
+        return int(time[0])
 
 def generate_date():
     return datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
 
-def download_video(url):
+def download_video(url,start=0,end=-1):
 
     video = pytube.YouTube(url)
     title = re.sub(r'[^a-zA-Z0-9_\s]', '', video.title.replace(" ","_")) + "_" + generate_date()
@@ -22,13 +28,24 @@ def download_video(url):
     dump_files = os.listdir('dumps')
     if not (f"{title}_audio.mp3" in dump_files and f"{title}_video.mp4" in dump_files):
         print(f"Start downloading {title}...")
-        with open('dumps/download.json','w') as f:f.write(json.dumps({"url":url,"title":title}))
+        with open('dumps/download.json','w') as f:f.write(json.dumps({
+            "url":url,
+            "title":title,
+            "start": convertToSeconds(start),
+            "end": convertToSeconds(end) if end != -1 else -1
+        }))
         subprocess.call("ts-node modules/downloader.ts", shell=True)
 
     subprocess.call(f"sh modules/merger.sh dumps/{title}_audio.mp3 dumps/{title}_video.mp4 videos/{title}.mp4", shell=True)
+
     print(f"Command: sh modules/merger.sh dumps/{title}_audio.mp3 dumps/{title}_video.mp4 videos/{title}.mp4")
     print(f"Downloaded {title}!")
 
+    if start != 0 and end != -1:
+        print(f"Trimming {title}...")
+        print(f"Start: {start}, End: {end}")
+        subprocess.call(f"python modules/trimmer.py", shell=True)
+
 # https://www.youtube.com/watch?v=Ck3qRdkoMbg
 url = input("Enter youtube url: ")
-download_video(url)
+download_video(url, "0:05", "0:10")
