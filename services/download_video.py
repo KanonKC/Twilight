@@ -23,22 +23,26 @@ def generate_date():
 def download_video(url,start=0,end=-1):
 
     video = pytube.YouTube(url)
-    title = re.sub(r'[^a-zA-Z0-9_\s]', '', video.title.replace(" ","_")) + "_" + generate_date()
+    title = video.title.replace(" ","_").replace("|","_") #re.sub(r'[^a-zA-Z0-9_\s]', '', video.title.replace(" ","_")) 
+    title_time = title + "_" + generate_date()
 
-    dump_files = os.listdir('dumps')
+    dump_files = os.listdir('downloads')
+
+    with open('downloads/download.json','w') as f:f.write(json.dumps({
+        "url":url,
+        "title":title,
+        "start": start,
+        "end": end if end != -1 else -1
+    }))
+
     if not (f"{title}_audio.mp3" in dump_files and f"{title}_video.mp4" in dump_files):
-        print(f"Start downloading {title}...")
-        with open('dumps/download.json','w') as f:f.write(json.dumps({
-            "url":url,
-            "title":title,
-            "start": convertToSeconds(start),
-            "end": convertToSeconds(end) if end != -1 else -1
-        }))
+        print(f"Start downloading {title}...")  
         subprocess.call("ts-node modules/downloader.ts", shell=True)
 
-    subprocess.call(f"sh modules/merger.sh dumps/{title}_audio.mp3 dumps/{title}_video.mp4 videos/{title}.mp4", shell=True)
+    merge_command = f"sh modules/merger.sh downloads/{title}_audio.mp3 downloads/{title}_video.mp4 videos/{title}.mp4"
 
-    print(f"Command: sh modules/merger.sh dumps/{title}_audio.mp3 dumps/{title}_video.mp4 videos/{title}.mp4")
+    subprocess.call(merge_command, shell=True)
+    print(f"Command: {merge_command}")
     print(f"Downloaded {title}!")
 
     if start != 0 and end != -1:
@@ -47,5 +51,17 @@ def download_video(url,start=0,end=-1):
         subprocess.call(f"python modules/trimmer.py", shell=True)
 
 # https://www.youtube.com/watch?v=Ck3qRdkoMbg
-url = input("Enter youtube url: ")
-download_video(url, "0:05", "0:10")
+# url = input("Enter youtube url: ")
+# download_video(url, convertToSeconds("0:05"), convertToSeconds("0:10"))
+
+def main():
+    request = json.load(open('tickets/download/ticket.json'))['youtube']
+
+    for video in request:
+        if len(video['highlight']) == 0:
+            download_video(video['url'])
+        else:
+            for highlight in video['highlight']:
+                download_video(video['url'], convertToSeconds(highlight['start']), convertToSeconds(highlight['end']))
+
+main()
