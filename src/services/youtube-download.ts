@@ -1,14 +1,5 @@
 import { exec } from "child_process";
-
-export interface DownloadedVideo {
-    id: string;
-    filaneme: string;
-    platform: {
-        name: "Youtube";
-        id: string;
-    }
-    title: string;
-}
+import { DownloadedVideo } from "../types/Video";
 
 export async function youtubeDownload(url:string):Promise<DownloadedVideo> {
     return new Promise((resolve, reject) => {

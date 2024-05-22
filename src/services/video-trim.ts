@@ -1,12 +1,5 @@
 import { exec } from "child_process";
-import { DownloadedVideo } from "./youtube-download";
-
-export interface VideoTrimResult {
-    originalVideo: DownloadedVideo;
-    editedVideo: DownloadedVideo;
-    start: number;
-    end: number;
-}
+import { DownloadedVideo, VideoTrimResult } from "../types/Video";
 
 export async function videoTrim(video:DownloadedVideo,start:number,end:number):Promise<VideoTrimResult> {
     return new Promise((resolve, reject) => {
