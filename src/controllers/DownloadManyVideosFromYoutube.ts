@@ -1,9 +1,10 @@
 import { videoTrim } from "../services/video-trim"
 import { youtubeDownload } from "../services/youtube-download"
+import { DownloadedVideo, VideoTrimResult } from "../types/Video"
 import { convertHHMMSSStringToSeconds } from "../utilities/Time"
 
 export interface DownloadManyVideoFromYoutubeRequest {
-    youtube: {
+    videos: {
         url: string,
         highlight: {
             start: string,
@@ -12,20 +13,28 @@ export interface DownloadManyVideoFromYoutubeRequest {
     }[]
 }
 
-export async function downloadManyVideosFromYoutube(request:DownloadManyVideoFromYoutubeRequest) {
-    for (const youtubeVideo of request.youtube) {
-        console.log("Start downloading video from youtube...")
+export interface DownloadManyVideoFromYoutubeResponse {
+    videos: {
+        video: DownloadedVideo,
+        trimmedVideos: VideoTrimResult[]
+    }[]
+
+}
+
+export async function downloadManyVideosFromYoutube(request:DownloadManyVideoFromYoutubeRequest):Promise<DownloadManyVideoFromYoutubeResponse> {
+    const response:DownloadManyVideoFromYoutubeResponse = {videos: []}
+    for (const youtubeVideo of request.videos) {
         const video = await youtubeDownload(youtubeVideo.url)
-        console.log("Video downloaded")
+        const trimmedVideos:VideoTrimResult[] = []
         if (youtubeVideo.highlight.length > 0) {
             for (const highlight of youtubeVideo.highlight) {
-                console.log("Start trimming video...")
                 const start = convertHHMMSSStringToSeconds(highlight.start)
                 const end = convertHHMMSSStringToSeconds(highlight.end)
                 const editedVideo = await videoTrim(video, start, end)
-                console.log(editedVideo)
-                console.log("-------------------------")
+                trimmedVideos.push(editedVideo)
             }
         }
+        response.videos.push({video, trimmedVideos})
     }
+    return response
 }
