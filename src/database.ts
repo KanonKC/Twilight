@@ -1,12 +1,15 @@
-import { Sequelize } from "sequelize";
+import { configDotenv } from "dotenv";
+import { Dialect, Sequelize } from "sequelize";
+
+configDotenv();
 
 const sequelize = new Sequelize(
-	"VideoVaultDB",
-	"stream",
-	"stream1q2w3e4r",
+	process.env.DATABASE_NAME as string,
+	process.env.DATABASE_USER as string,
+	process.env.DATABASE_PASSWORD as string,
 	{
-		host: "localhost",
-		dialect: "mysql",
+		host: process.env.DATABASE_HOST as string,
+		dialect: process.env.DATABASE_DIALECT as Dialect,
 	}
 );
 
