@@ -1,8 +1,20 @@
 {
   "dependencies": {
+    "chai": "^5.1.1",
+    "fastify": "^4.27.0",
+    "mysql2": "^3.9.7",
+    "nodemon": "^3.1.0",
+    "sequelize": "^6.37.3",
     "ytdl-core": "^4.11.5"
   },
   "devDependencies": {
-    "@types/node": "^20.11.19"
+    "@types/chai": "^4.3.16",
+    "@types/node": "^20.12.12",
+    "typescript": "^5.4.5"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "ts-node src/index.ts",
+    "run": "nodemon src/index.ts"
   }
 }
