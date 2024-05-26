@@ -21,7 +21,7 @@ def video_trim(video,start=0,end=-1):
     filename = video.split('/')[-1].split('.')[0]
     print(f"[id]{filename}_{start}-{end}[id]")
     print(f"[filename]{filename}_{start}-{end}.mp4[filename]")
-    result.write_videofile(f"src/dumps/{filename}_{start}-{end}.mp4",fps=60) # Many options...
+    result.write_videofile(f"src/dumps/{filename}_trimmed_{start}-{end}.mp4",fps=60) # Many options...
 
 if __name__ == '__main__':
     video = sys.argv[1]

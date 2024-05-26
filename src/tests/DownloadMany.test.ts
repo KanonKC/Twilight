@@ -1,17 +1,17 @@
-import { downloadManyVideosFromYoutube } from "../controllers/DownloadManyVideosFromYoutube";
+import { downloadManyVideos } from "../controllers/DownloadManyVideos";
 
-downloadManyVideosFromYoutube({
-    "youtube": [
-        {
-            "url": "https://www.youtube.com/live/8A3aB-lc_dA",
-            "highlight": [
-                {"start": "2:39:55","end": "2:40:38"},
-                {"start": "2:41:00","end": "2:41:13"},
-                {"start": "2:53:09","end": "2:53:15"},
-                {"start": "2:57:43","end": "2:58:06"}
-            ]
-        }
-    ]
-}).then(() => {
-    console.log("done")
-})
+// downloadManyVideos({
+//     "videos": [
+//         {
+//             "url": "https://www.youtube.com/watch?v=Ate6_NGpRNE",
+//             "highlight": [
+//                 {"start": "0:0:05","end": "0:0:15"},
+//                 {"start": "0:0:35","end": "0:0:40"},
+//                 {"start": "0:1:05","end": "0:1:20"}
+//             ]
+//         }
+//     ]
+// }
+// ).then(() => {
+//     console.log("done")
+// })

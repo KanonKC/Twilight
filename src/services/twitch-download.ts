@@ -1,11 +1,12 @@
 // twitch-dl download https://www.twitch.tv/kanonkc/clip/RefinedBlatantWoodcockPartyTime-5Z3UtcRwvm-dO4s3 -q source
 
 import { exec } from "child_process";
-import { DownloadedVideo } from "../types/Video";
-import { getTwitchVideoInfo } from "./twitch-info";
+import { Model } from "sequelize";
+import { DownloadVideoAttribute, DownloadVideoModel } from "../models/DownloadedVideo.model";
 import { generateRandomString } from "../utilities/RandomString";
+import { getTwitchVideoInfo } from "./twitch-info";
 
-export async function twitchDownload(url:string):Promise<DownloadedVideo> {
+export async function twitchDownload(url:string):Promise<Model<DownloadVideoAttribute, DownloadVideoAttribute>> {
     console.log("Downloading video ...")
 
     const videoInfo = await getTwitchVideoInfo(url)
@@ -16,21 +17,20 @@ export async function twitchDownload(url:string):Promise<DownloadedVideo> {
     return new Promise((resolve, reject) => {
 		exec(
 			`twitch-dl download ${url} -q source --overwrite -o src/dumps/${filename}`,
-			(error, stdout, stderr) => {
+			async (error, stdout, stderr) => {
 				if (error) {
 					console.warn(error);
 				}
 				if (stdout) {
                     console.log(stdout)
-					resolve({
+                    const result = await DownloadVideoModel.create({
                         id: id,
-                        filaneme: filename,
-                        platform: {
-                            name: "Twitch",
-                            id: videoInfo.id,
-                        },
                         title: videoInfo.title,
+                        filename: filename,
+                        platform: "Twitch",
+                        platformId: videoInfo.id,
                     })
+					resolve(result)
 				}
 				else {
                     throw new Error(stderr);
