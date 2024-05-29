@@ -1,4 +1,4 @@
-import { DownloadVideoAttribute } from "../models/DownloadedVideo.model";
+import { DownloadVideoAttribute } from "../models/models";
 
 export interface DownloadedVideo {
     id: string;

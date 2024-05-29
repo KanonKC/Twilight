@@ -5,7 +5,7 @@ import { DownloadManyVideoRequest, DownloadManyVideoResponse, DownloadedVideo, V
 import { convertHHMMSSStringToSeconds } from "../utilities/Time"
 import { twitchDownload } from "../services/twitch-download"
 import { Model } from "sequelize"
-import { DownloadVideoAttribute } from "../models/DownloadedVideo.model"
+import { DownloadVideoAttribute } from "../models/types"
 import { getVaultVideo } from "../services/get-vault-video"
 
 export async function downloadManyVideos(request:FastifyRequest,reply:FastifyReply):Promise<DownloadManyVideoResponse> {

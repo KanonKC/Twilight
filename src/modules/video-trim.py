@@ -18,10 +18,11 @@ def video_trim(video,start=0,end=-1):
     # txt_clip = ( TextClip("My Holidays 2013",fontsize=70,color='white').with_position('center').with_duration(10) )
 
     result = CompositeVideoClip([edited_video]) # Overlay text on video
-    filename = video.split('/')[-1].split('.')[0]
+    filenamePrefix = video.split('/')[-1].split('.')[0]
+    filename = f"{filenamePrefix}_trimmed_{start}-{end}.mp4"
     print(f"[id]{filename}_{start}-{end}[id]")
-    print(f"[filename]{filename}_{start}-{end}.mp4[filename]")
-    result.write_videofile(f"src/dumps/{filename}_trimmed_{start}-{end}.mp4",fps=60) # Many options...
+    print(f"[filename]{filename}[filename]")
+    result.write_videofile(f"src/dumps/{filename}",fps=60) # Many options...
 
 if __name__ == '__main__':
     video = sys.argv[1]

@@ -1,7 +1,8 @@
 import { opendir, readdirSync } from "fs";
 import { DownloadedVideo } from "../types/Video";
 import { includeAll } from "../utilities/StringMatch";
-import { DownloadVideoAttribute, DownloadVideoModel } from "../models/DownloadedVideo.model";
+import { DownloadVideoModel } from "../models/models";
+import { DownloadVideoAttribute } from "../models/types";
 import { getTwitchVideoInfo } from "./twitch-info";
 import { Model } from "sequelize";
 

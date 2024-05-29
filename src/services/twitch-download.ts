@@ -2,7 +2,8 @@
 
 import { exec } from "child_process";
 import { Model } from "sequelize";
-import { DownloadVideoAttribute, DownloadVideoModel } from "../models/DownloadedVideo.model";
+import { DownloadVideoModel } from "../models/models";
+import { DownloadVideoAttribute } from "../models/types";
 import { generateRandomString } from "../utilities/RandomString";
 import { getTwitchVideoInfo } from "./twitch-info";
 
