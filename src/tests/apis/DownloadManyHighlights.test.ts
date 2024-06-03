@@ -1,4 +1,4 @@
-import { downloadManyHighlightsAPI } from "../apis/DownloadManyHighlight.api"
+import { downloadManyHighlightsAPI } from "../../apis/DownloadManyHighlight.api"
 
 downloadManyHighlightsAPI({
     url: "https://www.youtube.com/watch?v=vUy8uGIB03Q",

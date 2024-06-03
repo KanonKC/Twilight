@@ -1,4 +1,4 @@
-import { DownloadVideoModel } from "../models/models";
+import { DownloadVideoModel } from "../../models/models";
 
 DownloadVideoModel.destroy({
     where: {},

@@ -15,13 +15,12 @@ export async function youtubeDownloadRange(url:string, start:string, end:string)
 	const filename = `youtube_${videoKey}_range_${startText}-${endText}_${generateRandomString(4)}`;
 	return new Promise((resolve, reject) => {
 		exec(
-			`yt-dlp --cookies-from-browser firefox --paths "./src/dumps" -f "bestvideo+bestaudio[ext=mp4]/best" --download-sections "*${start}-${end}" "${url}" -o "${filename}"`,
+			`yt-dlp --cookies-from-browser firefox --paths "./src/dumps" -f "bestvideo+bestaudio[ext=mp4]/best" --merge-output-format mp4 --download-sections "*${start}-${end}" "${videoKey}" -o "${filename}"`,
 			async (error, stdout, stderr) => {
 				if (error) {
-					console.warn(error);
+					reject(error)
 				}
-				if (stdout) {
-
+				else {
 					const result = await DownloadVideoModel.create({
 						id: filename,
 						title: "empty",
@@ -30,13 +29,7 @@ export async function youtubeDownloadRange(url:string, start:string, end:string)
 						platformId: videoKey,
 					});
 
-					console.log(stdout)
-
 					resolve(result)
-				}
-				else {
-					throw new Error(stderr);
-					// reject()
 				}
 			}
 		);
