@@ -1,4 +1,4 @@
-import { DownloadVideoAttribute } from "../models/models";
+import { DownloadVideoAttribute } from "../models/types";
 
 export interface DownloadedVideo {
     id: string;
@@ -54,3 +54,4 @@ export interface DownloadManyVideoResponse {
         trimmedVideos: VideoTrimResult[]
     }[]
 }
+

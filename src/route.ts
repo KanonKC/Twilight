@@ -1,8 +1,8 @@
 import fastify from "fastify"
-import { downloadManyVideos } from "./controllers/DownloadManyVideos"
+import { downloadManyHighlights } from "./controllers/DownloadManyHighlights"
 
 const server = fastify()
 
-server.post('/downloads', downloadManyVideos)
+server.post('/highlights', downloadManyHighlights)
 
 export default server
