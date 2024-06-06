@@ -7,25 +7,29 @@ import { DownloadVideoAttribute } from "../models/types";
 import { getTwitchVideoInfo } from "./twitch-info";
 import { generateRandomString } from "../utilities/String";
 
-export async function twitchDownload(url:string):Promise<Model<DownloadVideoAttribute, DownloadVideoAttribute>> {
+export async function twitchDownloadRange(url:string, start:string, end:string):Promise<Model<DownloadVideoAttribute, DownloadVideoAttribute>> {
     console.log("Downloading video ...")
 
     const videoInfo = await getTwitchVideoInfo(url)
-    const randomString = generateRandomString(4)
-    const id = `twitch_${videoInfo.id}_${randomString}`
-    const filename = `${id}.mp4`
+    // const randomString = generateRandomString(4)
+    // const id = `twitch_${videoInfo.id}_${randomString}`
+    // const filename = `${id}.mp4`
+
+    const startText = start.split(':').join("_");
+	const endText = end.split(':').join("_");
+	const filename = `twitch_${videoInfo.id}_range_${startText}-${endText}_${generateRandomString(4)}.mp4`;
 
     return new Promise((resolve, reject) => {
 		exec(
-			`twitch-dl download ${url} -q source --overwrite -o src/dumps/${filename}`,
+			`twitch-dl download ${url} -q source --start ${start} --end ${end} --overwrite -o src/dumps/${filename}`,
 			async (error, stdout, stderr) => {
 				if (error) {
-					console.warn(error);
+                    throw new Error(error.message)
 				}
-				if (stdout) {
+				else {
                     console.log(stdout)
                     const result = await DownloadVideoModel.create({
-                        id: id,
+                        id: videoInfo.id,
                         title: videoInfo.title,
                         filename: filename,
                         platform: "Twitch",
@@ -33,10 +37,7 @@ export async function twitchDownload(url:string):Promise<Model<DownloadVideoAttr
                     })
 					resolve(result)
 				}
-				else {
-                    throw new Error(stderr);
-					// reject()
-				}
+
 			}
 		);
 	});

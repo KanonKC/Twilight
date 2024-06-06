@@ -28,14 +28,10 @@ export async function youtubeUpload(
 			`python src/modules/youtube-upload.py --file="${filePath}" --title="${title}" --description="${description}" --keywords="${tags.join(",")}" --category="22" --privacyStatus="${privacyStatus}"`,
 			async (error, stdout, stderr) => {
 				if (error) {
-					throw new Error(error.message)
-				}
-				if (stdout) {
-					resolve({videoId: stdout.split("'")[1]})
+					reject(error)
 				}
 				else {
-                    throw new Error(stderr);
-					// reject()
+					resolve({videoId: stdout.split("'")[1]})
 				}
 			}
 		);

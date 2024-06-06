@@ -1,6 +1,6 @@
 import { youtubeUpload } from "../../services/youtube-upload";
 
-youtubeUpload("src/dumps/youtube_KNqZv5q7Rj4_range_1_04_04-1_04_34_E6gT.mp4",{
+youtubeUpload("src/dumps/twitch_2165090720_range_0_43_31-1_00_40_XeqC.mp4",{
     title: "Test Upload 12345",
 }).then(response => {
     console.log("Upload Completed")
