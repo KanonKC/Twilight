@@ -17,7 +17,8 @@ export async function twitchDownloadRange(url:string, start:string, end:string):
 
     const startText = start.split(':').join("_");
 	const endText = end.split(':').join("_");
-	const filename = `twitch_${videoInfo.id}_range_${startText}-${endText}_${generateRandomString(4)}.mp4`;
+	const videoId = `twitch_${videoInfo.id}_range_${startText}-${endText}_${generateRandomString(4)}`;
+	const filename = `${videoId}.mp4`;
 
     return new Promise((resolve, reject) => {
 		exec(
@@ -29,7 +30,7 @@ export async function twitchDownloadRange(url:string, start:string, end:string):
 				else {
                     console.log(stdout)
                     const result = await DownloadVideoModel.create({
-                        id: videoInfo.id,
+                        id: videoId,
                         title: videoInfo.title,
                         filename: filename,
                         platform: "Twitch",
