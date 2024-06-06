@@ -10,6 +10,10 @@ export interface YoutubeUploadVideoDetail {
     privacyStatus?: "public" | "private" | "unlisted";
 }
 
+export interface YoutubeUploadVideoResponse {
+	videoId: string;
+}
+
 export async function youtubeUpload(
     filePath:string,
     {
@@ -18,7 +22,7 @@ export async function youtubeUpload(
         tags=[],
         privacyStatus="unlisted",
     }: YoutubeUploadVideoDetail
-) {
+): Promise<YoutubeUploadVideoResponse> {
     return new Promise((resolve, reject) => {
 		exec(
 			`python src/modules/youtube-upload.py --file="${filePath}" --title="${title}" --description="${description}" --keywords="${tags.join(",")}" --category="22" --privacyStatus="${privacyStatus}"`,
@@ -27,7 +31,7 @@ export async function youtubeUpload(
 					throw new Error(error.message)
 				}
 				if (stdout) {
-					resolve(stdout.split("'")[1])
+					resolve({videoId: stdout.split("'")[1]})
 				}
 				else {
                     throw new Error(stderr);
