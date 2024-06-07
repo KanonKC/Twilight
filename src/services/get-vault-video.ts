@@ -1,10 +1,7 @@
-import { opendir, readdirSync } from "fs";
-import { DownloadedVideo } from "../types/Video";
-import { includeAll } from "../utilities/StringMatch";
+import { Model } from "sequelize";
 import { DownloadVideoModel } from "../models/models";
 import { DownloadVideoAttribute } from "../models/types";
 import { getTwitchVideoInfo } from "./twitch-info";
-import { Model } from "sequelize";
 
 export async function getVaultVideo(url:string):Promise<Model<DownloadVideoAttribute, DownloadVideoAttribute> | null>{
 
