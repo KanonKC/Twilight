@@ -1,5 +1,6 @@
 import { DownloadVideoAttribute } from "../models/types";
-import { youtubeDownloadRange } from "../services/youtube-download-range";
+import { downloadRange } from "../services/download-range";
+import { videoConcat } from "../services/video-concat";
 
 export interface DownloadManyHighlightRequest {
     url: string;
@@ -7,6 +8,7 @@ export interface DownloadManyHighlightRequest {
         start: string;
         end: string;
     }[]
+    concat: boolean;
 }
 
 export interface DownloadManyHighlightResponse {
@@ -16,22 +18,32 @@ export interface DownloadManyHighlightResponse {
         end: string;
         downloadVideo: DownloadVideoAttribute
     }[]
+    concatVideo: DownloadVideoAttribute | null;
 }
 
 export async function downloadManyHighlightsAPI(payload:DownloadManyHighlightRequest):Promise<DownloadManyHighlightResponse> {
 
     const response:DownloadManyHighlightResponse = {
         url: payload.url,
-        highlights: []
+        highlights: [],
+        concatVideo: null
     }
 
+    const highlightFilenames:string[] = []
+
     for (const highlight of payload.highlights) {
-        const video = await youtubeDownloadRange(payload.url, highlight.start, highlight.end)
+        const video = await downloadRange(payload.url, highlight.start, highlight.end)
         response.highlights.push({
             start: highlight.start,
             end: highlight.end,
             downloadVideo: video.dataValues
         })
+        highlightFilenames.push(video.dataValues.filename)
+    }
+
+    if (payload.concat) {
+        const concatVideo = await videoConcat(highlightFilenames)
+        response.concatVideo = concatVideo.dataValues
     }
 
     return response

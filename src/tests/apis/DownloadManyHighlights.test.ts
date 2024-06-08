@@ -43,8 +43,10 @@ downloadManyHighlightsAPI({
         // {start: "3:21:38", end: "3:21:51"},
         {start: "1:08:57", end: "1:09:04"},
         {start: "1:14:22", end: "1:14:52"},
-    ]
+    ],
+    concat: true
 }).then(response => {
     console.log("Download Completed")
-    console.log(response)
+    console.log(response.highlights)
+    console.log(response.concatVideo)
 })
