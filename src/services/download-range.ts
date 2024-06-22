@@ -3,7 +3,7 @@ import { DownloadVideoAttribute } from "../models/types";
 import { twitchDownloadRange } from "./twitch-download-range";
 import { youtubeDownloadRange } from "./youtube-download-range";
 
-export async function downloadRange(url: string, start: string, end: string):Promise<Model<DownloadVideoAttribute, DownloadVideoAttribute>> {
+export async function downloadRange(url: string, start?: string, end?: string):Promise<Model<DownloadVideoAttribute, DownloadVideoAttribute>> {
     let video:Model<DownloadVideoAttribute, DownloadVideoAttribute>;
     if (url.includes('twitch')) {
         video = await twitchDownloadRange(url,start,end)

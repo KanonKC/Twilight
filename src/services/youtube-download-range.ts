@@ -8,14 +8,26 @@ import { configDotenv } from "dotenv";
 
 configDotenv();
 
-export async function youtubeDownloadRange(url:string, start:string, end:string):Promise<Model<DownloadVideoAttribute, DownloadVideoAttribute>> {
+export async function youtubeDownloadRange(url:string, start?:string, end?:string):Promise<Model<DownloadVideoAttribute, DownloadVideoAttribute>> {
 	const videoKey = getYoutubeVideoKey(url);
-	const startText = start.split(':').join("_");
-	const endText = end.split(':').join("_");
-	const filename = `youtube_${videoKey}_range_${startText}-${endText}_${generateRandomString(4)}`;
+
+	let filename:string;
+	let command:string;
+	
+	if (start && end) {
+		const startText = start.split(':').join("_");
+		const endText = end.split(':').join("_");
+		filename = `youtube_${videoKey}_range_${startText}-${endText}_${generateRandomString(4)}`;
+		command = `yt-dlp --cookies-from-browser firefox --paths "./src/dumps" -f "bestvideo+bestaudio[ext=mp4]/best" --merge-output-format mp4 --download-sections "*${start}-${end}" "${videoKey}" -o "${filename}"`
+	}
+	else {
+		filename = `youtube_${videoKey}_${generateRandomString(4)}`;
+		command = `yt-dlp --cookies-from-browser firefox --paths "./src/dumps" -f "bestvideo+bestaudio[ext=mp4]/best" --merge-output-format mp4 "${videoKey}" -o "${filename}"`
+	}
+
 	return new Promise((resolve, reject) => {
 		exec(
-			`yt-dlp --cookies-from-browser firefox --paths "./src/dumps" -f "bestvideo+bestaudio[ext=mp4]/best" --merge-output-format mp4 --download-sections "*${start}-${end}" "${videoKey}" -o "${filename}"`,
+			command,
 			async (error, stdout, stderr) => {
 				if (error) {
 					reject(error)
