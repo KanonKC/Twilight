@@ -3,4 +3,6 @@ node_modules/
 *.mp3
 *.mp4
 *.txt
+*.mkv
 *.json
+.env
