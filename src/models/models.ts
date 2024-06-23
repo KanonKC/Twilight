@@ -1,16 +1,16 @@
-import { DataTypes, ModelDefined, Optional } from "sequelize";
+import { DataTypes, ModelDefined, UUIDV4 } from "sequelize";
 import sequelize from "../database";
-import { DownloadedVideo } from "../types/Video";
-import { DownloadVideoAttribute, DownloadVideoCreation, TrimmedVideoAttribute, TrimmedVideoCreation } from "./types";
+import { ConcatenatedVideoAttribute, ConcatenatedVideoCreation, DownloadVideoAttribute, DownloadVideoCreation } from "./types";
 
 export const DownloadVideoModel:ModelDefined<DownloadVideoAttribute,DownloadVideoCreation> = sequelize.define("DownloadedVideo", {
     id: {
         type: DataTypes.STRING,
-        primaryKey: true
+        primaryKey: true,
+        defaultValue: UUIDV4,
     },
     title: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     filename: {
         type: DataTypes.STRING,
@@ -23,42 +23,36 @@ export const DownloadVideoModel:ModelDefined<DownloadVideoAttribute,DownloadVide
     platformId: {
         type: DataTypes.STRING,
         allowNull: false
-    }
+    },
+    startRange: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    endRange: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
 });
 
-// export const TrimmedVideoModel:ModelDefined<TrimmedVideoAttribute, TrimmedVideoCreation> = sequelize.define("TrimmedVideo", {
-//     id: {
-//         type: DataTypes.STRING,
-//         primaryKey: true
-//     },
-//     title: {
-//         type: DataTypes.STRING,
-//         allowNull: false
-//     },
-//     filename: {
-//         type: DataTypes.STRING,
-//         allowNull: false
-//     },
-//     originalVideoId: {
-//         type: DataTypes.STRING,
-//         allowNull: false,
-//         references: {
-//             model: DownloadVideoModel,
-//             key: 'id'
-//         }
-//     },
-//     originalStartSecond: {
-//         type: DataTypes.INTEGER,
-//         allowNull: false
-//     },
-//     originalEndSecond: {
-//         type: DataTypes.INTEGER,
-//         allowNull: false
-//     }
-// })
+export const ConcatenatedVideoModel:ModelDefined<ConcatenatedVideoAttribute,ConcatenatedVideoCreation> = sequelize.define("ConcatenatedVideo", {
+    id: {
+        type: DataTypes.STRING,
+        primaryKey: true,
+        defaultValue: UUIDV4,
+    },
+    title: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    filename: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
+})
+
 
 sequelize.sync().then(() => {
-    console.log('DownloadVideoModel table created successfully!');
+    console.log('All tables created and updated successfully!');
 }).catch((error) => {
     console.error('Unable to create table : ', error);
 });
