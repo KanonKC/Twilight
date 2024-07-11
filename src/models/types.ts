@@ -1,3 +1,8 @@
+interface SequelizeBaseAttribute {
+    createdAt: Date;
+    updatedAt: Date;
+}
+
 export interface DownloadVideoAttribute {
     id: string;
     title: string | null;
@@ -28,3 +33,10 @@ export interface ConcatenatedVideoAttribute {
 }
 
 export interface ConcatenatedVideoCreation extends ConcatenatedVideoAttribute {}
+
+export interface DownloadedVideoConcatenatedVideoAttribute {
+    downloadedVideoId: string;
+    concatenatedVideoId: string;
+}
+
+export interface DownloadedVideoConcatenatedVideoCreation extends DownloadedVideoConcatenatedVideoAttribute {}

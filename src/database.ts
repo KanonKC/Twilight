@@ -1,10 +1,10 @@
 import { configDotenv } from "dotenv";
 import { Dialect, Sequelize } from "sequelize";
 
-configDotenv();
+// configDotenv();
 
 const sequelize = new Sequelize(
-	process.env.DATABASE_NAME as string,
+	"videovaultdevdb",
 	process.env.DATABASE_USER as string,
 	process.env.DATABASE_PASSWORD as string,
 	{
@@ -15,6 +15,9 @@ const sequelize = new Sequelize(
 
 sequelize.authenticate().then(() => {
     console.log('Connection has been established successfully.');
+	console.log('Database Name: ', process.env.DATABASE_NAME);
+	console.log('Database User: ', process.env.DATABASE_USER);
+	console.log('Database Host: ', process.env.DATABASE_HOST);
 }).catch((error) => {
     console.error('Unable to connect to the database: ', error);
 });

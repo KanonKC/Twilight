@@ -1,6 +1,6 @@
 import { exec } from "child_process";
-import { DownloadVideoModel } from "../models/models";
-import { DownloadVideoAttribute } from "../models/types";
+import { DownloadVideoModel } from "../../../models/models";
+import { DownloadVideoAttribute } from "../../../models/types";
 import { Model } from "sequelize";
 
 export async function youtubeDownload(url:string):Promise<Model<DownloadVideoAttribute, DownloadVideoAttribute>> {

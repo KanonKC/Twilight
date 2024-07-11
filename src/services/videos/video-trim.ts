@@ -1,6 +1,6 @@
 import { exec } from "child_process";
-import { DownloadVideoAttribute } from "../models/types";
-import { VideoTrimResult } from "../types/Video";
+import { DownloadVideoAttribute } from "../../models/types";
+import { VideoTrimResult } from "../../types/Video";
 
 export async function videoTrim(video:DownloadVideoAttribute,start:number,end:number):Promise<VideoTrimResult> {
     return new Promise((resolve, reject) => {

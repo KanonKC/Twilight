@@ -1,7 +1,7 @@
 import { Model } from "sequelize";
-import { DownloadVideoAttribute } from "../models/types";
-import { twitchDownloadRange } from "./twitch-download-range";
-import { youtubeDownloadRange } from "./youtube-download-range";
+import { DownloadVideoAttribute } from "../../models/types";
+import { twitchDownloadRange } from "./platforms/twitch-download-range";
+import { youtubeDownloadRange } from "./platforms/youtube-download-range";
 
 export async function downloadRange(url: string, start?: string, end?: string):Promise<Model<DownloadVideoAttribute, DownloadVideoAttribute>> {
     let video:Model<DownloadVideoAttribute, DownloadVideoAttribute>;

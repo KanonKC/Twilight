@@ -1,5 +1,4 @@
-import { DownloadVideoAttribute } from "../models/types";
-import { YoutubeUploadVideoDetail, YoutubeUploadVideoResponse, youtubeUpload } from "../services/youtube-upload";
+import { YoutubeUploadVideoDetail, YoutubeUploadVideoResponse, youtubeUpload } from "../services/uploads/youtube-upload";
 
 export interface UploadVideoToYoutubeRequest {
     file: string;

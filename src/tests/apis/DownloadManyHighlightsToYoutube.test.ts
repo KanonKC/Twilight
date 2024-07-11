@@ -1,19 +1,14 @@
 import { downloadManyHighlightsToYoutubeAPI } from "../../apis/DownloadManyHighlightsToYoutube.api"
 
 downloadManyHighlightsToYoutubeAPI({
-    url: "https://www.youtube.com/watch?v=jCh_mqXWpX0",
+    url: "https://www.youtube.com/live/4KRUizMYZms",
     highlights: [
-        {start: "1:28:40", end: "1:28:46"},
-        {start: "1:39:09", end: "1:39:24"},
-        {start: "2:09:43", end: "2:09:50"},
-        {start: "2:10:08", end: "2:10:24"},
-        {start: "2:12:25", end: "2:12:38"},
-        {start: "2:17:24", end: "2:17:36"},
-        {start: "2:26:43", end: "2:27:07"},
-        {start: "2:43:17", end: "2:43:44"},
+        {start: "1:50:37", end: "2:05:40"},
+        {start: "2:08:45", end: "2:21:35"},
     ],
     detail: {
-        title: "Content Warning คอแตก",
+        title: "เจอ MARK YOUR CHOICE 2 เกมติด",
+        privacyStatus: "unlisted",
     }
 }).then(response => {
     console.log("Upload Completed")

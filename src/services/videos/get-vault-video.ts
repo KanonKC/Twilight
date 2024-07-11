@@ -1,7 +1,7 @@
 import { Model } from "sequelize";
-import { DownloadVideoModel } from "../models/models";
-import { DownloadVideoAttribute } from "../models/types";
-import { getTwitchVideoInfo } from "./twitch-info";
+import { DownloadVideoModel } from "../../models/models";
+import { DownloadVideoAttribute } from "../../models/types";
+import { getTwitchVideoInfo } from "../downloads/platforms/twitch-info";
 
 export async function getVaultVideo(url:string):Promise<Model<DownloadVideoAttribute, DownloadVideoAttribute> | null>{
 

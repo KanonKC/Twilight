@@ -1,6 +1,6 @@
 import { DownloadVideoAttribute } from "../models/types";
-import { downloadRange } from "../services/download-range";
-import { videoConcat } from "../services/video-concat";
+import { downloadRange } from "../services/downloads";
+import { videoConcat } from "../services/videos/video-concat";
 
 export interface DownloadManyHighlightRequest {
     url: string;

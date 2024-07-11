@@ -1,10 +1,10 @@
 import { exec } from "child_process";
-import { generateRandomString } from "../utilities/String";
-import { DownloadVideoModel } from "../models/models";
-import { DownloadVideoAttribute } from "../models/types";
+import { generateRandomString } from "../../utilities/String";
+import { ConcatenatedVideoModel, DownloadVideoModel } from "../../models/models";
+import { ConcatenatedVideoAttribute, ConcatenatedVideoCreation, DownloadVideoAttribute } from "../../models/types";
 import { Model } from "sequelize";
 
-export async function videoConcat(filenames:string[]):Promise<Model<DownloadVideoAttribute, DownloadVideoAttribute>> {
+export async function videoConcat(filenames:string[],title:string|undefined):Promise<Model<ConcatenatedVideoAttribute, ConcatenatedVideoCreation>> {
     
     const generateString = generateRandomString(8)
     const videoId = `concat_${generateString}`
@@ -19,12 +19,10 @@ export async function videoConcat(filenames:string[]):Promise<Model<DownloadVide
 					reject(error)
 				}
 				else {
-					const result = await DownloadVideoModel.create({
+					const result = await ConcatenatedVideoModel.create({
 						id: videoId,
 						title: "empty",
 						filename: outputFilename,
-						platform: "Stream-Editor",
-						platformId: generateString,
 					});
 
 					resolve(result)

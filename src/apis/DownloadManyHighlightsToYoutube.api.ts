@@ -1,5 +1,5 @@
-import { downloadRange } from "../services/download-range";
-import { YoutubeUploadVideoDetail, YoutubeUploadVideoResponse, youtubeUpload } from "../services/youtube-upload";
+import { downloadRange } from "../services/downloads";
+import { YoutubeUploadVideoDetail, YoutubeUploadVideoResponse, youtubeUpload } from "../services/uploads/youtube-upload";
 import { downloadManyHighlightsAPI } from "./DownloadManyHighlight.api";
 
 export interface DownloadManyHighlightsToYoutubeRequest {

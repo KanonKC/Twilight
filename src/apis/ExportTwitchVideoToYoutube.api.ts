@@ -1,7 +1,7 @@
 import { DownloadVideoAttribute } from "../models/types";
-import { downloadRange } from "../services/download-range";
-import { getTwitchVideoInfo } from "../services/twitch-info";
-import { YoutubeUploadVideoDetail, YoutubeUploadVideoResponse, youtubeUpload } from "../services/youtube-upload";
+import { downloadRange } from "../services/downloads";
+import { getTwitchVideoInfo } from "../services/downloads/platforms/twitch-info";
+import { YoutubeUploadVideoResponse, youtubeUpload } from "../services/uploads/youtube-upload";
 
 export interface ExportTwitchVideoToYoutubeRequest {
     url: string;

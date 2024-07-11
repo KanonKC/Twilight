@@ -1,5 +1,5 @@
 import { exec } from "child_process";
-import { DownloadedVideo } from "../types/Video";
+import { DownloadedVideo } from "../../types/Video";
 
 export function decodeVideoText(url:string):Promise<DownloadedVideo> {
     return new Promise((resolve, reject) => {
