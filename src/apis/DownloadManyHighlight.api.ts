@@ -42,8 +42,8 @@ export async function downloadManyHighlightsAPI(payload:DownloadManyHighlightReq
     }
 
     if (payload.concat) {
-        const concatVideo = await videoConcat(highlightFilenames)
-        response.concatVideo = concatVideo.dataValues
+        // const concatVideo = await videoConcat(highlightFilenames,"")
+        // response.concatVideo = concatVideo.dataValues
     }
 
     return response

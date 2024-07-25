@@ -1,10 +1,10 @@
 import { exec } from "child_process";
-import { DownloadVideoModel } from "../models/models";
-import { DownloadVideoAttribute } from "../models/types";
 import { Model } from "sequelize";
-import { generateRandomString } from "../utilities/String";
-import { getYoutubeVideoKey } from "../utilities/Url";
+import { generateRandomString } from "../../../utilities/String";
+import { getYoutubeVideoKey } from "../../../utilities/Url";
 import { configDotenv } from "dotenv";
+import { DownloadedVideo } from "../../../models";
+import { DownloadVideoAttribute } from "../../../models/types";
 
 configDotenv();
 
@@ -33,7 +33,7 @@ export async function youtubeDownloadRange(url:string, start?:string, end?:strin
 					reject(error)
 				}
 				else {
-					const result = await DownloadVideoModel.create({
+					const result = await DownloadedVideo.create({
 						id: filename,
 						title: "empty",
 						filename: `${filename}.mp4`,

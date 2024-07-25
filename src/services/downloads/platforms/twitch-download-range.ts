@@ -2,10 +2,10 @@
 
 import { exec } from "child_process";
 import { Model } from "sequelize";
-import { DownloadVideoModel } from "../models/models";
-import { DownloadVideoAttribute } from "../models/types";
+import { DownloadVideoAttribute } from "../../../models/types";
 import { getTwitchVideoInfo } from "./twitch-info";
-import { generateRandomString } from "../utilities/String";
+import { generateRandomString } from "../../../utilities/String";
+import { DownloadedVideo } from "../../../models";
 
 export async function twitchDownloadRange(url:string, start?:string, end?:string):Promise<Model<DownloadVideoAttribute, DownloadVideoAttribute>> {
     console.log("Downloading video ...")
@@ -41,7 +41,7 @@ export async function twitchDownloadRange(url:string, start?:string, end?:string
 				}
 				else {
                     console.log(stdout)
-                    const result = await DownloadVideoModel.create({
+                    const result = await DownloadedVideo.create({
                         id: videoId,
                         title: videoInfo.title,
                         filename: filename,

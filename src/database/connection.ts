@@ -13,6 +13,10 @@ const sequelize = new Sequelize(
 	}
 );
 
+sequelize.sync({force: true}).then(() => {
+	console.log('Database & tables created!');
+})
+
 sequelize.authenticate().then(() => {
     console.log('Connection has been established successfully.');
 	console.log('Database Name: ', process.env.DATABASE_NAME);

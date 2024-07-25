@@ -1,8 +1,8 @@
 import { exec } from "child_process";
-import { generateRandomString } from "../../utilities/String";
-import { ConcatenatedVideoModel, DownloadVideoModel } from "../../models/models";
-import { ConcatenatedVideoAttribute, ConcatenatedVideoCreation, DownloadVideoAttribute } from "../../models/types";
 import { Model } from "sequelize";
+import { ConcatenatedVideoAttribute, ConcatenatedVideoCreation } from "../../models/types";
+import { generateRandomString } from "../../utilities/String";
+import { ConcatenatedVideo } from "../../models";
 
 export async function videoConcat(filenames:string[],title:string|undefined):Promise<Model<ConcatenatedVideoAttribute, ConcatenatedVideoCreation>> {
     
@@ -19,12 +19,12 @@ export async function videoConcat(filenames:string[],title:string|undefined):Pro
 					reject(error)
 				}
 				else {
-					const result = await ConcatenatedVideoModel.create({
+					const result = await ConcatenatedVideo.create({
 						id: videoId,
 						title: "empty",
 						filename: outputFilename,
-					});
 
+					});
 					resolve(result)
 				}
 			}
