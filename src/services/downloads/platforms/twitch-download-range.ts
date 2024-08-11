@@ -2,12 +2,12 @@
 
 import { exec } from "child_process";
 import { Model } from "sequelize";
-import { DownloadVideoAttribute } from "../../../models/types";
 import { getTwitchVideoInfo } from "./twitch-info";
 import { generateRandomString } from "../../../utilities/String";
-import { DownloadedVideo } from "../../../models";
+import { prisma } from "../../..";
+import { DownloadedVideo } from "@prisma/client";
 
-export async function twitchDownloadRange(url:string, start?:string, end?:string):Promise<Model<DownloadVideoAttribute, DownloadVideoAttribute>> {
+export async function twitchDownloadRange(url:string, start?:string, end?:string):Promise<DownloadedVideo> {
     console.log("Downloading video ...")
 
     const videoInfo = await getTwitchVideoInfo(url)
@@ -41,12 +41,13 @@ export async function twitchDownloadRange(url:string, start?:string, end?:string
 				}
 				else {
                     console.log(stdout)
-                    const result = await DownloadedVideo.create({
-                        id: videoId,
-                        title: videoInfo.title,
-                        filename: filename,
-                        platform: "Twitch",
-                        platformId: videoInfo.id,
+                    const result = await prisma.downloadedVideo.create({
+                        data: {
+                            title: videoInfo.title,
+                            filename: filename,
+                            platform: "Twitch",
+                            platformId: videoInfo.id,
+                        }
                     })
 					resolve(result)
 				}

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@prisma/client": "^5.18.0",
     "chai": "^5.1.1",
     "dotenv": "^16.4.5",
     "fastify": "^4.27.0",
@@ -13,6 +14,7 @@
   "devDependencies": {
     "@types/chai": "^4.3.16",
     "@types/node": "^20.12.12",
+    "prisma": "^5.18.0",
     "typescript": "^5.4.5"
   },
   "scripts": {

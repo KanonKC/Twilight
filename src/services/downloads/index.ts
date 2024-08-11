@@ -1,10 +1,9 @@
-import { Model } from "sequelize";
-import { DownloadVideoAttribute } from "../../models/types";
+import { DownloadedVideo } from "@prisma/client";
 import { twitchDownloadRange } from "./platforms/twitch-download-range";
 import { youtubeDownloadRange } from "./platforms/youtube-download-range";
 
-export async function downloadRange(url: string, start?: string, end?: string):Promise<Model<DownloadVideoAttribute, DownloadVideoAttribute>> {
-    let video:Model<DownloadVideoAttribute, DownloadVideoAttribute>;
+export async function downloadRange(url: string, start?: string, end?: string):Promise<DownloadedVideo> {
+    let video:DownloadedVideo;
     if (url.includes('twitch')) {
         video = await twitchDownloadRange(url,start,end)
     }

@@ -1,5 +1,4 @@
 import { exec } from "child_process";
-import { Model } from "sequelize";
 
 export interface YoutubeUploadVideoDetail {
     title: string;

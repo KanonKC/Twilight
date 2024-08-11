@@ -1,10 +1,10 @@
 import { exec } from "child_process";
 import { Model } from "sequelize";
-import { ConcatenatedVideoAttribute, ConcatenatedVideoCreation } from "../../models/types";
 import { generateRandomString } from "../../utilities/String";
-import { ConcatenatedVideo } from "../../models";
+import { prisma } from "../..";
+import { ConcatenatedVideo } from "@prisma/client";
 
-export async function videoConcat(filenames:string[],title:string|undefined):Promise<Model<ConcatenatedVideoAttribute, ConcatenatedVideoCreation>> {
+export async function videoConcat(filenames:string[],title:string|undefined):Promise<ConcatenatedVideo> {
     
     const generateString = generateRandomString(8)
     const videoId = `concat_${generateString}`
@@ -19,11 +19,11 @@ export async function videoConcat(filenames:string[],title:string|undefined):Pro
 					reject(error)
 				}
 				else {
-					const result = await ConcatenatedVideo.create({
-						id: videoId,
-						title: "empty",
-						filename: outputFilename,
-
+					const result = await prisma.concatenatedVideo.create({
+						data: {
+							title: "empty",
+							filename: outputFilename,
+						}
 					});
 					resolve(result)
 				}
