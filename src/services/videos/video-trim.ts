@@ -5,7 +5,7 @@
 // export async function videoTrim(video:DownloadVideo,start:number,end:number):Promise<VideoTrimResult> {
 //     return new Promise((resolve, reject) => {
 // 		exec(
-// 			`python src/modules/video-trim.py src/dumps/${video.filename} ${start} ${end}`,
+// 			`python src/modules/video-trim.py ${process.env.VIDEO_STORAGE_PATH}/${video.filename} ${start} ${end}`,
 // 			(error, stdout, stderr) => {
 // 				if (error) {
 // 					console.warn(error);

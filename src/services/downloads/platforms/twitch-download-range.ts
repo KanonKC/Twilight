@@ -6,6 +6,9 @@ import { getTwitchVideoInfo } from "./twitch-info";
 import { generateRandomString } from "../../../utilities/String";
 import { prisma } from "../../../prisma";
 import { DownloadedVideo } from "@prisma/client";
+import { configDotenv } from "dotenv";
+
+configDotenv();
 
 export async function twitchDownloadRange(url:string, start?:string, end?:string):Promise<DownloadedVideo> {
     console.log("Downloading video ...")
@@ -24,12 +27,12 @@ export async function twitchDownloadRange(url:string, start?:string, end?:string
         const endText = end.split(':').join("_");
         videoId = `twitch_${videoInfo.id}_range_${startText}-${endText}_${generateRandomString(4)}`;
         filename = `${videoId}.mp4`;
-        command = `twitch-dl download ${url} -q source --start ${start} --end ${end} --overwrite -o src/dumps/${filename}`
+        command = `twitch-dl download ${url} -q source --start ${start} --end ${end} --overwrite -o ${process.env.VIDEO_STORAGE_PATH}/${filename}`
     }
     else {
         videoId = `twitch_${videoInfo.id}_${generateRandomString(4)}`;
         filename = `${videoId}.mp4`;
-        command = `twitch-dl download ${url} -q source --overwrite -o src/dumps/${filename}`
+        command = `twitch-dl download ${url} -q source --overwrite -o ${process.env.VIDEO_STORAGE_PATH}/${filename}`
     }
 
     return new Promise((resolve, reject) => {
