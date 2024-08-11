@@ -1,8 +1,7 @@
-import { exec } from "child_process";
-import { Model } from "sequelize";
-import { generateRandomString } from "../../utilities/String";
-import { prisma } from "../../prisma";
 import { ConcatenatedVideo } from "@prisma/client";
+import { exec } from "child_process";
+import { prisma } from "../../prisma";
+import { generateRandomString } from "../../utilities/String";
 
 export async function videoConcat(filenames:string[],title:string|undefined):Promise<ConcatenatedVideo> {
     

@@ -1,5 +1,6 @@
 import { downloadRange } from "../services/downloads";
-import { YoutubeUploadVideoDetail, YoutubeUploadVideoResponse, youtubeUpload } from "../services/uploads/youtube-upload";
+import { YoutubeUploadVideoResponse, youtubeUpload } from "../services/uploads/youtube-upload";
+import { YoutubeUploadVideoDetail } from "../types/Youtube";
 import { downloadManyHighlightsAPI } from "./DownloadManyHighlight.api";
 
 export interface DownloadManyHighlightsToYoutubeRequest {
@@ -8,7 +9,7 @@ export interface DownloadManyHighlightsToYoutubeRequest {
         start: string;
         end: string;
     }[],
-    detail: YoutubeUploadVideoDetail
+    detail: YoutubeUploadVideoDetail;
 }
 
 export interface DownloadManyHighlightsToYoutubeResponse {
@@ -19,7 +20,7 @@ export async function downloadManyHighlightsToYoutubeAPI(payload: DownloadManyHi
     const downloadManyHighlightsRequest = {
         url: payload.url,
         highlights: payload.highlights,
-        concat: true
+        concatVideo: true
     }
     
     const video = await downloadManyHighlightsAPI(downloadManyHighlightsRequest)

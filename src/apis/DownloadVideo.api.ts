@@ -1,7 +1,7 @@
-import { downloadRange } from "../services/download-range";
+import { downloadRange } from "../services/downloads"
 
 export async function downloadVideoAPI(url: string) {
     const downloadVideoModel = await downloadRange(url)
-    const video = downloadVideoModel.dataValues
+    const video = downloadVideoModel
     return { url, video }
 }

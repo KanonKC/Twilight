@@ -1,4 +1,5 @@
-import { YoutubeUploadVideoDetail, YoutubeUploadVideoResponse, youtubeUpload } from "../services/uploads/youtube-upload";
+import { YoutubeUploadVideoResponse, youtubeUpload } from "../services/uploads/youtube-upload";
+import { YoutubeUploadVideoDetail } from "../types/Youtube";
 
 export interface UploadVideoToYoutubeRequest {
     file: string;

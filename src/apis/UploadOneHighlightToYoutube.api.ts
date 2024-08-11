@@ -1,5 +1,6 @@
 import { downloadRange } from "../services/downloads";
-import { YoutubeUploadVideoDetail, youtubeUpload } from "../services/uploads/youtube-upload";
+import { youtubeUpload } from "../services/uploads/youtube-upload";
+import { YoutubeUploadVideoDetail } from "../types/Youtube";
 
 export interface UploadOneTwitchHighlightToYoutubeRequest {
     url: string;

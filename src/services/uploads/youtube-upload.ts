@@ -1,11 +1,5 @@
 import { exec } from "child_process";
-
-export interface YoutubeUploadVideoDetail {
-    title: string;
-    description?: string;
-    tags?: string[];
-    privacyStatus?: "public" | "private" | "unlisted";
-}
+import { YoutubeUploadVideoDetail } from "../../types/Youtube";
 
 export interface YoutubeUploadVideoResponse {
 	videoId: string;
