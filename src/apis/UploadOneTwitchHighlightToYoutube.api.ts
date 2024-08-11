@@ -18,7 +18,7 @@
 //     const twitchVideo = await twitchDownloadRange(payload.url,payload.highlight.start,payload.highlight.end)
     
 //     const targetFilename = twitchVideo.filename
-//     const targetFilePath = `src/dumps/${targetFilename}`
+//     const targetFilePath = `${process.env.VIDEO_STORAGE_PATH}/${targetFilename}`
     
 //     const uploadResponse = await youtubeUpload(targetFilePath,payload.videoDetail)
 //     return { url: `https://youtube.com/watch?v=${uploadResponse.videoId}`}

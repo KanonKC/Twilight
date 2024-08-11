@@ -1,7 +1,5 @@
 import { downloadManyHighlightsFromManyVideosAPI } from "../../apis/DownloadManyHighlightsFromManyVideos.api";
 
-
-
 downloadManyHighlightsFromManyVideosAPI({
     videos: [
         {

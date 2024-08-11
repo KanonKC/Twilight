@@ -17,7 +17,7 @@
 
 //     return new Promise((resolve, reject) => {
 // 		exec(
-// 			`twitch-dl download ${url} -q source --overwrite -o src/dumps/${filename}`,
+// 			`twitch-dl download ${url} -q source --overwrite -o ${process.env.VIDEO_STORAGE_PATH}/${filename}`,
 // 			async (error, stdout, stderr) => {
 // 				if (error) {
 // 					console.warn(error);

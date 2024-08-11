@@ -3,6 +3,9 @@ import { downloadRange } from "../services/downloads";
 import { videoConcat } from "../services/videos/video-concat";
 import { YoutubeUploadVideoDetail } from "../types/Youtube";
 import { youtubeUpload } from "../services/uploads/youtube-upload";
+import { configDotenv } from "dotenv";
+
+configDotenv()
 
 export interface SourceVideoHighlight {
     url: string;
@@ -75,7 +78,7 @@ export async function downloadManyHighlightsFromManyVideosAndExportAPI(payload: 
         response.concatVideo = concatVideo
 
         if (payload.youtube) {
-            const youtubeUploadResponse = await youtubeUpload(`src/dumps/${concatVideo.filename}`, payload.youtube)
+            const youtubeUploadResponse = await youtubeUpload(`${process.env.VIDEO_STORAGE_PATH}/${concatVideo.filename}`, payload.youtube)
             response.youtubeVideoId = youtubeUploadResponse.videoId
         }
     }

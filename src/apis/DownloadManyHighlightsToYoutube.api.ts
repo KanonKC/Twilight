@@ -1,7 +1,10 @@
+import { configDotenv } from "dotenv";
 import { downloadRange } from "../services/downloads";
 import { YoutubeUploadVideoResponse, youtubeUpload } from "../services/uploads/youtube-upload";
 import { YoutubeUploadVideoDetail } from "../types/Youtube";
 import { downloadManyHighlightsAPI } from "./DownloadManyHighlight.api";
+
+configDotenv()
 
 export interface DownloadManyHighlightsToYoutubeRequest {
     url: string;
@@ -27,5 +30,5 @@ export async function downloadManyHighlightsToYoutubeAPI(payload: DownloadManyHi
 
     if (!video.concatVideo) throw new Error("No video to upload")
 
-    return youtubeUpload(`src/dumps/${video.concatVideo!.filename}`, payload.detail)
+    return youtubeUpload(`${process.env.VIDEO_STORAGE_PATH}/${video.concatVideo!.filename}`, payload.detail)
 }
