@@ -4,8 +4,10 @@ const payload = {
     url: "https://www.youtube.com/live/MjyvLwVjK1s",
     highlights: [
         {start: "0:47:44", end: "0:47:47"},
+        {start: "0:48:44", end: "0:48:47"},
+        {start: "0:49:44", end: "0:49:47"},
     ],
-    concat: false
+    concatVideo: true
 }
 
 downloadManyHighlightsAPI(payload).then(response => {

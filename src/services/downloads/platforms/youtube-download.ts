@@ -1,7 +1,7 @@
 import { DownloadedVideo } from "@prisma/client";
 import { exec } from "child_process";
 import { Model } from "sequelize";
-import { prisma } from "../../..";
+import { prisma } from "../../../prisma";
 
 export async function youtubeDownload(url:string):Promise<DownloadedVideo> {
     return new Promise((resolve, reject) => {

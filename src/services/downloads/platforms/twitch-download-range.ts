@@ -4,7 +4,7 @@ import { exec } from "child_process";
 import { Model } from "sequelize";
 import { getTwitchVideoInfo } from "./twitch-info";
 import { generateRandomString } from "../../../utilities/String";
-import { prisma } from "../../..";
+import { prisma } from "../../../prisma";
 import { DownloadedVideo } from "@prisma/client";
 
 export async function twitchDownloadRange(url:string, start?:string, end?:string):Promise<DownloadedVideo> {

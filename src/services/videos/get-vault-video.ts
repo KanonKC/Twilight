@@ -1,6 +1,6 @@
 import { Model } from "sequelize";
 import { getTwitchVideoInfo } from "../downloads/platforms/twitch-info";
-import { prisma } from "../..";
+import { prisma } from "../../prisma";
 import { DownloadedVideo } from "@prisma/client";
 
 export async function getVaultVideo(url:string):Promise<DownloadedVideo | null>{

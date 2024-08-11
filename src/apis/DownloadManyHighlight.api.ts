@@ -1,5 +1,6 @@
-import { DownloadedVideo } from "@prisma/client";
+import { ConcatenatedVideo, DownloadedVideo } from "@prisma/client";
 import { downloadRange } from "../services/downloads";
+import { videoConcat } from "../services/videos/video-concat";
 
 export interface DownloadManyHighlightRequest {
     url: string;
@@ -7,7 +8,7 @@ export interface DownloadManyHighlightRequest {
         start: string;
         end: string;
     }[]
-    concat: boolean;
+    concatVideo: boolean;
 }
 
 export interface DownloadManyHighlightResponse {
@@ -17,7 +18,7 @@ export interface DownloadManyHighlightResponse {
         end: string;
         downloadVideo: DownloadedVideo;
     }[]
-    concatVideo: DownloadedVideo | null;
+    concatVideo: ConcatenatedVideo | null;
 }
 
 export async function downloadManyHighlightsAPI(payload:DownloadManyHighlightRequest):Promise<DownloadManyHighlightResponse> {
@@ -40,9 +41,9 @@ export async function downloadManyHighlightsAPI(payload:DownloadManyHighlightReq
         highlightFilenames.push(video.filename)
     }
 
-    if (payload.concat) {
-        // const concatVideo = await videoConcat(highlightFilenames,"")
-        // response.concatVideo = concatVideo
+    if (payload.concatVideo) {
+        const concatVideo = await videoConcat(highlightFilenames,"")
+        response.concatVideo = concatVideo
     }
 
     return response

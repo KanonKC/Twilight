@@ -1,7 +1,7 @@
 import { exec } from "child_process";
 import { Model } from "sequelize";
 import { generateRandomString } from "../../utilities/String";
-import { prisma } from "../..";
+import { prisma } from "../../prisma";
 import { ConcatenatedVideo } from "@prisma/client";
 
 export async function videoConcat(filenames:string[],title:string|undefined):Promise<ConcatenatedVideo> {
@@ -10,6 +10,14 @@ export async function videoConcat(filenames:string[],title:string|undefined):Pro
     const videoId = `concat_${generateString}`
     const outputFilename = `${videoId}.mp4`;
     const inputFiles = filenames.map(filename => `src/dumps/${filename}`).join(" ");
+
+	const contributedVideo = await prisma.downloadedVideo.findMany({
+		where: {
+			filename: {
+				in: filenames
+			}
+		}
+	})
     
     return new Promise((resolve, reject) => {
 		exec(
@@ -21,8 +29,15 @@ export async function videoConcat(filenames:string[],title:string|undefined):Pro
 				else {
 					const result = await prisma.concatenatedVideo.create({
 						data: {
-							title: "empty",
+							title: "concat-video-test",
 							filename: outputFilename,
+							downloadedVideos: {
+								createMany: {
+									data: contributedVideo.map(video => ({
+										downloadedVideoId: video.id,
+									}))
+								}
+							}
 						}
 					});
 					resolve(result)
