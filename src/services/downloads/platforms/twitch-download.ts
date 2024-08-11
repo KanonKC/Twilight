@@ -3,11 +3,11 @@
 // import { exec } from "child_process";
 // import { Model } from "sequelize";
 // import { DownloadVideoModel } from "../models/models";
-// import { DownloadVideoAttribute } from "../models/types";
+// import { DownloadVideo } from "../models/types";
 // import { getTwitchVideoInfo } from "./twitch-info";
 // import { generateRandomString } from "../utilities/String";
 
-// export async function twitchDownload(url:string):Promise<Model<DownloadVideoAttribute, DownloadVideoAttribute>> {
+// export async function twitchDownload(url:string):Promise<Model<DownloadVideo, DownloadVideo>> {
 //     console.log("Downloading video ...")
 
 //     const videoInfo = await getTwitchVideoInfo(url)

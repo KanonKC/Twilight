@@ -18,7 +18,7 @@ export async function uploadOneHighlightToYoutubeAPI(payload:UploadOneTwitchHigh
 
     const video = await downloadRange(payload.url,payload.highlight.start,payload.highlight.end)
     
-    const targetFilename = video.dataValues.filename
+    const targetFilename = video.filename
     const targetFilePath = `src/dumps/${targetFilename}`
     
     const uploadResponse = await youtubeUpload(targetFilePath,payload.videoDetail)

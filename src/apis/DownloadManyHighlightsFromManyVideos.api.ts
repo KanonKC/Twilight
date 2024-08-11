@@ -1,4 +1,4 @@
-import { ConcatenatedVideoAttribute, DownloadVideoAttribute } from "../models/types";
+import { ConcatenatedVideo, DownloadedVideo } from "@prisma/client";
 import { downloadRange } from "../services/downloads";
 import { videoConcat } from "../services/videos/video-concat";
 
@@ -20,10 +20,10 @@ interface DownloadManyHighlightsFromManyVideosAPIResponse {
         highlights: {
             start: string;
             end: string;
-            downloadVideo: DownloadVideoAttribute
+            downloadVideo: DownloadedVideo
         }[]
     }[]
-    concatVideo: ConcatenatedVideoAttribute | null;
+    concatVideo: ConcatenatedVideo | null;
 }
 
 export async function DownloadManyHighlightsFromManyVideosAPI(payload:DownloadManyHighlightsFromManyVideosAPIRequest): Promise<DownloadManyHighlightsFromManyVideosAPIResponse> {
@@ -39,16 +39,16 @@ export async function DownloadManyHighlightsFromManyVideosAPI(payload:DownloadMa
         const videoHighlightsResponse: {
             start: string;
             end: string;
-            downloadVideo: DownloadVideoAttribute
+            downloadVideo: DownloadedVideo
         }[] = []
 
         for (const highlight of video.highlights) {
             const downloadModel = await downloadRange(video.url, highlight.start, highlight.end)
-            highlightFilenames.push(downloadModel.dataValues.filename)
+            highlightFilenames.push(downloadModel.filename)
             videoHighlightsResponse.push({
                 start: highlight.start,
                 end: highlight.end,
-                downloadVideo: downloadModel.dataValues
+                downloadVideo: downloadModel
             })
         }
 
@@ -60,8 +60,8 @@ export async function DownloadManyHighlightsFromManyVideosAPI(payload:DownloadMa
     }
 
     if (payload.concat) {
-        const concatVideoModel = await videoConcat(highlightFilenames)
-        response.concatVideo = concatVideoModel.dataValues
+        const concatVideoModel = await videoConcat(highlightFilenames, undefined)
+        response.concatVideo = concatVideoModel
     }
 
     return response
