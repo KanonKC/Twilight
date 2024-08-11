@@ -1,5 +1,3 @@
-import { DownloadVideo } from "../models/types";
-
 export interface DownloadedVideo {
     id: string;
     filaneme: string;
@@ -32,8 +30,8 @@ export interface TwitchVideo {
 }
 
 export interface VideoTrimResult {
-    originalVideo: DownloadVideo;
-    editedVideo: DownloadVideo;
+    originalVideo: DownloadedVideo;
+    editedVideo: DownloadedVideo;
     start: number;
     end: number;
 }
@@ -50,7 +48,7 @@ export interface DownloadManyVideoRequest {
 
 export interface DownloadManyVideoResponse {
     videos: {
-        video: DownloadVideo,
+        video: DownloadedVideo,
         trimmedVideos: VideoTrimResult[]
     }[]
 }
