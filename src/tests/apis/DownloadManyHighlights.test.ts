@@ -39,9 +39,9 @@ import { downloadManyHighlightsAPI } from "../../apis/DownloadManyHighlight.api"
 // console.log(__dirname)
 // youtube_L1X5z3agHRE_range_3_35_26-3_36_39_QDfi
 downloadManyHighlightsAPI({
-    url: "https://www.twitch.tv/videos/2182932117",
+    url: "https://www.youtube.com/watch?v=yJyf8VMj5HE",
     highlights: [
-        {start: "4:35:45", end: "4:54:40"},
+        {start: "0", end: "34"},
         // {start: "1:05:32", end: "1:05:47"},
     ],
     concat: false
@@ -57,6 +57,6 @@ downloadManyHighlightsAPI({
     if (response.concatVideo) {
         console.log("Concat")
         console.log(`${FULL_PATH}/${response.concatVideo?.filename}`)
-    } 
+    }
 
 })
