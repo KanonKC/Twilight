@@ -1,16 +1,51 @@
 import { downloadManyHighlightsAPI } from "../../apis/DownloadManyHighlight.api"
 
-const payload = {
-    url: "https://www.youtube.com/live/MjyvLwVjK1s",
-    highlights: [
-        {start: "0:47:44", end: "0:47:47"},
-        {start: "0:48:44", end: "0:48:47"},
-        {start: "0:49:44", end: "0:49:47"},
-    ],
-    concatVideo: true
-}
+// downloadManyHighlightsAPI({
+//     url: "https://www.youtube.com/live/5WjlJE5xh1I",
+//     highlights: [
+//         // {start: "2:49:11", end: "2:50:13"},
+//         // {start: "3:21:38", end: "3:21:51"},
+//         {start: "3:29:13", end: "3:29:35"},
+//     ]
+// }).then(response => {
+//     console.log("Download Completed")
+//     console.log(response)
+// })
 
-downloadManyHighlightsAPI(payload).then(response => {
+// downloadManyHighlightsAPI({
+//     url: "https://www.youtube.com/live/ecAVCfhT3NE",
+//     highlights: [
+//         // {start: "2:49:11", end: "2:50:13"},
+//         // {start: "3:21:38", end: "3:21:51"},
+//         {start: "2:30:05", end: "2:30:18"},
+//     ]
+// }).then(response => {
+//     console.log("Download Completed")
+//     console.log(response)
+// })
+
+// downloadManyHighlightsAPI({
+//     url: "https://www.youtube.com/live/FjjGGcEViRY",
+//     highlights: [
+//         // {start: "2:49:11", end: "2:50:13"},
+//         // {start: "3:21:38", end: "3:21:51"},
+//         {start: "1:51:54", end: "1:52:03"},
+//     ]
+// }).then(response => {
+//     console.log("Download Completed")
+//     console.log(response)
+// })
+
+// console.log(__dirname)
+// youtube_L1X5z3agHRE_range_3_35_26-3_36_39_QDfi
+downloadManyHighlightsAPI({
+    url: "https://www.youtube.com/watch?v=yJyf8VMj5HE",
+    highlights: [
+        {start: "0", end: "34"},
+        // {start: "1:05:32", end: "1:05:47"},
+    ],
+    concatVideo: false
+}).then(response => {
     console.log("Download Completed")
     const FULL_PATH = "C:/Users/user/Documents/Stream-Manage/Streaming-Content-Manager"
     
@@ -22,6 +57,6 @@ downloadManyHighlightsAPI(payload).then(response => {
     if (response.concatVideo) {
         console.log("Concat")
         console.log(`${FULL_PATH}/${response.concatVideo?.filename}`)
-    } 
+    }
 
 })

@@ -1,14 +1,14 @@
 import { downloadManyHighlightsToYoutubeAPI } from "../../apis/DownloadManyHighlightsToYoutube.api"
 
 downloadManyHighlightsToYoutubeAPI({
-    url: "https://www.youtube.com/live/4KRUizMYZms",
+    url: "https://www.youtube.com/live/MpjmKaMnLbc",
     highlights: [
-        {start: "1:50:37", end: "2:05:40"},
-        {start: "2:08:45", end: "2:21:35"},
+        {start: "0:24:08", end: "0:58:07"},
+        {start: "0:58:50", end: "1:01:18"},
     ],
     detail: {
-        title: "เจอ MARK YOUR CHOICE 2 เกมติด",
-        privacyStatus: "unlisted",
+        title: "เล่าเรื่องผีตอน 2 ทุ่ม (เรื่องเต็ม Code 18)",
+        privacyStatus: "private"
     }
 }).then(response => {
     console.log("Upload Completed")
