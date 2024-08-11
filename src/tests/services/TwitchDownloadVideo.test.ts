@@ -26,7 +26,7 @@ import { expect } from "chai";
 //     })
 //     it("should trim a video from Twitch", async () => {
 //         const video = await twitchDownload("https://www.twitch.tv/videos/1214826771")
-//         const trimmedVideo = await videoTrim(video.dataValues,6,8)
+//         const trimmedVideo = await videoTrim(video,6,8)
 //         expect(trimmedVideo).haveOwnProperty("id")
 //         expect(trimmedVideo).haveOwnProperty("filename")
 //         expect(trimmedVideo).haveOwnProperty("platform")

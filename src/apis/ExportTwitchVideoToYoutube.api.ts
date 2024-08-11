@@ -1,14 +1,14 @@
-import { DownloadVideoAttribute } from "../models/types";
-import { downloadRange } from "../services/download-range";
-import { getTwitchVideoInfo } from "../services/twitch-info";
-import { YoutubeUploadVideoDetail, YoutubeUploadVideoResponse, youtubeUpload } from "../services/youtube-upload";
+import { DownloadedVideo } from "@prisma/client";
+import { downloadRange } from "../services/downloads";
+import { getTwitchVideoInfo } from "../services/downloads/platforms/twitch-info";
+import { YoutubeUploadVideoResponse, youtubeUpload } from "../services/uploads/youtube-upload";
 
 export interface ExportTwitchVideoToYoutubeRequest {
     url: string;
 }
 
 export interface ExportTwitchVideoToYoutubeResponse {
-    downloadedVideo: DownloadVideoAttribute
+    downloadedVideo: DownloadedVideo;
     youtube: YoutubeUploadVideoResponse
 }
 
@@ -16,10 +16,10 @@ export async function exportTwitchVideoToYoutube(payload: ExportTwitchVideoToYou
     const videoInfo = await getTwitchVideoInfo(payload.url)
     const video = await downloadRange(payload.url)
 
-    const youtubeVideo = await youtubeUpload(`src/dumps/${video.dataValues.filename}`,{
+    const youtubeVideo = await youtubeUpload(`src/dumps/${video.filename}`,{
         title: videoInfo.title,
         privacyStatus: "unlisted"
     })
 
-    return {downloadedVideo: video.dataValues, youtube: youtubeVideo}
+    return {downloadedVideo: video, youtube: youtubeVideo}
 }

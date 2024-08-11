@@ -1,9 +1,5 @@
-import { twitchDownloadRange } from "../services/twitch-download-range";
-import { YoutubeUploadVideoDetail, youtubeUpload } from "../services/youtube-upload";
-import { youtubeDownloadRange } from "../services/youtube-download-range";
-import { Model } from "sequelize";
-import { DownloadVideoAttribute } from "../models/types";
-import { downloadRange } from "../services/download-range";
+import { downloadRange } from "../services/downloads";
+import { YoutubeUploadVideoDetail, youtubeUpload } from "../services/uploads/youtube-upload";
 
 export interface UploadOneTwitchHighlightToYoutubeRequest {
     url: string;
@@ -22,7 +18,7 @@ export async function uploadOneHighlightToYoutubeAPI(payload:UploadOneTwitchHigh
 
     const video = await downloadRange(payload.url,payload.highlight.start,payload.highlight.end)
     
-    const targetFilename = video.dataValues.filename
+    const targetFilename = video.filename
     const targetFilePath = `src/dumps/${targetFilename}`
     
     const uploadResponse = await youtubeUpload(targetFilePath,payload.videoDetail)

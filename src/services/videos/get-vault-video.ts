@@ -1,13 +1,13 @@
 import { Model } from "sequelize";
-import { DownloadVideoModel } from "../models/models";
-import { DownloadVideoAttribute } from "../models/types";
-import { getTwitchVideoInfo } from "./twitch-info";
+import { getTwitchVideoInfo } from "../downloads/platforms/twitch-info";
+import { prisma } from "../../prisma";
+import { DownloadedVideo } from "@prisma/client";
 
-export async function getVaultVideo(url:string):Promise<Model<DownloadVideoAttribute, DownloadVideoAttribute> | null>{
+export async function getVaultVideo(url:string):Promise<DownloadedVideo | null>{
 
     if (url.includes("youtube")) {
         const prefixId = url.split("v=")[1];
-        return DownloadVideoModel.findOne({
+        return prisma.downloadedVideo.findFirst({
             where: {
                 platform: "Youtube",
                 platformId: prefixId
@@ -16,7 +16,7 @@ export async function getVaultVideo(url:string):Promise<Model<DownloadVideoAttri
     }
     else if (url.includes("twitch")) {
         const data = await getTwitchVideoInfo(url)
-        return DownloadVideoModel.findOne({
+        return prisma.downloadedVideo.findFirst({
             where: {
                 platform: "Twitch",
                 platformId: data.id
