@@ -10,7 +10,7 @@ interface DownloadManyHighlightsFromManyVideosAPIRequest {
             end: string;
         }[]
     }[]
-    concat?: boolean;
+    concatVideo?: boolean;
     concatVideoTitle?: string;
 }
 
@@ -26,7 +26,7 @@ interface DownloadManyHighlightsFromManyVideosAPIResponse {
     concatVideo: ConcatenatedVideo | null;
 }
 
-export async function DownloadManyHighlightsFromManyVideosAPI(payload:DownloadManyHighlightsFromManyVideosAPIRequest): Promise<DownloadManyHighlightsFromManyVideosAPIResponse> {
+export async function downloadManyHighlightsFromManyVideosAPI(payload:DownloadManyHighlightsFromManyVideosAPIRequest): Promise<DownloadManyHighlightsFromManyVideosAPIResponse> {
     
     const response:DownloadManyHighlightsFromManyVideosAPIResponse = {
         videos: [],
@@ -59,7 +59,7 @@ export async function DownloadManyHighlightsFromManyVideosAPI(payload:DownloadMa
 
     }
 
-    if (payload.concat) {
+    if (payload.concatVideo) {
         const concatVideoModel = await videoConcat(highlightFilenames, undefined)
         response.concatVideo = concatVideoModel
     }
