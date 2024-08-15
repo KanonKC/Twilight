@@ -11,7 +11,6 @@ import { configDotenv } from "dotenv";
 configDotenv();
 
 export async function twitchDownloadRange(url:string, start?:string, end?:string):Promise<DownloadedVideo> {
-    console.log("Downloading video ...")
 
     const videoInfo = await getTwitchVideoInfo(url)
     // const randomString = generateRandomString(4)
@@ -43,7 +42,6 @@ export async function twitchDownloadRange(url:string, start?:string, end?:string
                     throw new Error(error.message)
 				}
 				else {
-                    console.log(stdout)
                     const result = await prisma.downloadedVideo.create({
                         data: {
                             title: videoInfo.title,
