@@ -1,6 +1,10 @@
+import { configDotenv } from 'dotenv'
 import server from './route'
 
-server.listen({ port: 8080 }, (err, address) => {
+configDotenv()
+const PORT = Number(process.env.PORT) || 8081
+
+server.listen({ port: PORT }, (err, address) => {
   if (err) {
     console.error(err)
     process.exit(1)
