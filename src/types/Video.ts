@@ -6,6 +6,10 @@ export interface DownloadedVideo {
     title: string;
 }
 
+export interface YoutubeVideo {
+    title: string;
+}
+
 export interface TwitchVideo {
     id: string;
     slug: string;
