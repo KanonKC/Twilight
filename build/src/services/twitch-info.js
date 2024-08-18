@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTwitchVideoInfo = void 0;
+exports.getTwitchVideoData = void 0;
 const child_process_1 = require("child_process");
-function getTwitchVideoInfo(url) {
+function getTwitchVideoData(url) {
     return new Promise((resolve, reject) => {
         (0, child_process_1.exec)(`twitch-dl info --json ${url}`, (error, stdout, stderr) => {
             if (error) {
@@ -18,4 +18,4 @@ function getTwitchVideoInfo(url) {
         });
     });
 }
-exports.getTwitchVideoInfo = getTwitchVideoInfo;
+exports.getTwitchVideoData = getTwitchVideoData;

@@ -1,5 +1,5 @@
 import { Model } from "sequelize";
-import { getTwitchVideoInfo } from "../downloads/platforms/twitch-info";
+import { getTwitchVideoData } from "../downloads/platforms/get-twitch-video-data";
 import { prisma } from "../../prisma";
 import { DownloadedVideo } from "@prisma/client";
 
@@ -15,7 +15,7 @@ export async function getVaultVideo(url:string):Promise<DownloadedVideo | null>{
         })
     }
     else if (url.includes("twitch")) {
-        const data = await getTwitchVideoInfo(url)
+        const data = await getTwitchVideoData(url)
         return prisma.downloadedVideo.findFirst({
             where: {
                 platform: "Twitch",

@@ -8,7 +8,7 @@ import { prisma } from "../../../prisma";
 
 configDotenv();
 
-export async function youtubeDownloadRange(url:string, start?:string, end?:string):Promise<DownloadedVideo> {
+export async function downloadYoutubeVideo(url:string, start?:string, end?:string):Promise<DownloadedVideo> {
 	const videoKey = getYoutubeVideoKey(url);
 
 	let filename:string;

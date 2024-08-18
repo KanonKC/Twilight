@@ -2,7 +2,7 @@
 
 import { exec } from "child_process";
 import { Model } from "sequelize";
-import { getTwitchVideoInfo } from "./twitch-info";
+import { getTwitchVideoData } from "./get-twitch-video-data";
 import { generateRandomString } from "../../../utilities/String";
 import { prisma } from "../../../prisma";
 import { DownloadedVideo } from "@prisma/client";
@@ -10,9 +10,9 @@ import { configDotenv } from "dotenv";
 
 configDotenv();
 
-export async function twitchDownloadRange(url:string, start?:string, end?:string):Promise<DownloadedVideo> {
+export async function downloadTwitchVideo(url:string, start?:string, end?:string):Promise<DownloadedVideo> {
 
-    const videoInfo = await getTwitchVideoInfo(url)
+    const videoInfo = await getTwitchVideoData(url)
     // const randomString = generateRandomString(4)
     // const id = `twitch_${videoInfo.id}_${randomString}`
     // const filename = `${id}.mp4`

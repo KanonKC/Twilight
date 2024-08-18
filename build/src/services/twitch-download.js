@@ -3,11 +3,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.twitchDownload = void 0;
 const child_process_1 = require("child_process");
-const twitch_info_1 = require("./twitch-info");
+const twitch_info_1 = require("./get-twitch-video-data");
 const RandomString_1 = require("../utilities/RandomString");
 async function twitchDownload(url) {
     console.log("Downloading video ...");
-    const videoInfo = await (0, twitch_info_1.getTwitchVideoInfo)(url);
+    const videoInfo = await (0, twitch_info_1.getTwitchVideoData)(url);
     const randomString = (0, RandomString_1.generateRandomString)(4);
     const id = `twitch_${videoInfo.id}_${randomString}`;
     const filename = `${id}.mp4`;

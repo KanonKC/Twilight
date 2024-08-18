@@ -1,7 +1,7 @@
 import { exec } from "child_process";
 import { TwitchVideo } from "../../../types/Video";
 
-export function getTwitchVideoInfo(url:string):Promise<TwitchVideo> {
+export function getTwitchVideoData(url:string):Promise<TwitchVideo> {
     return new Promise((resolve, reject) => {
         exec(
             `twitch-dl info --json ${url}`,
@@ -13,8 +13,8 @@ export function getTwitchVideoInfo(url:string):Promise<TwitchVideo> {
                     resolve(JSON.parse(stdout) as TwitchVideo)
                 }
                 else {
-                    throw new Error(stderr);
-                    // reject()
+                    // throw new Error(stderr);
+                    reject(stderr)
                 }
             }
         );
