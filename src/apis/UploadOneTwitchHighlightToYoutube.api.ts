@@ -1,5 +1,5 @@
 import { YoutubeUploadVideoDetail } from "../types/Youtube";
-import { twitchDownloadRange } from "../services/downloads/platforms/twitch-download-range";
+import { downloadTwitchVideo } from "../services/downloads/platforms/download-twitch-video";
 import { youtubeUpload } from "../services/uploads/youtube-upload";
 
 export interface UploadOneTwitchHighlightToYoutubeRequest {
@@ -16,7 +16,7 @@ export interface UploadOneTwitchHighlightToYoutubeResponse {
 }
 
 export async function uploadOneTwitchHighlightToYoutubeAPI(payload:UploadOneTwitchHighlightToYoutubeRequest): Promise<UploadOneTwitchHighlightToYoutubeResponse> {
-    const twitchVideo = await twitchDownloadRange(payload.url,payload.highlight.start,payload.highlight.end)
+    const twitchVideo = await downloadTwitchVideo(payload.url,payload.highlight.start,payload.highlight.end)
     
     const targetFilename = twitchVideo.filename
     const targetFilePath = `${process.env.VIDEO_STORAGE_PATH}/${targetFilename}`

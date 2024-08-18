@@ -2,9 +2,9 @@ import { describe, it } from "node:test";
 import { twitchDownload } from "../../services/twitch-download";
 import { videoTrim } from "../../services/video-trim";
 import { expect } from "chai";
-import { twitchDownloadRange } from "../../services/twitch-download-range";
+import { downloadTwitchVideo } from "../../services/download-twitch-video";
 
-twitchDownloadRange(
+downloadTwitchVideo(
     "https://www.twitch.tv/videos/2165090720",
     "0:43:31",
     "1:00:40",
