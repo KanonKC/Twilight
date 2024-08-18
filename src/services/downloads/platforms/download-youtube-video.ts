@@ -5,6 +5,7 @@ import { getYoutubeVideoKey } from "../../../utilities/Url";
 import { configDotenv } from "dotenv";
 import { DownloadedVideo } from "@prisma/client";
 import { prisma } from "../../../prisma";
+import { getYoutubeVideoData } from "./get-youtube-video-data";
 
 configDotenv();
 
@@ -13,6 +14,8 @@ export async function downloadYoutubeVideo(url:string, start?:string, end?:strin
 
 	let filename:string;
 	let command:string;
+
+	const videoInfo = await getYoutubeVideoData(url);
 	
 	if (start && end) {
 		const startText = start.split(':').join("_");
@@ -35,6 +38,7 @@ export async function downloadYoutubeVideo(url:string, start?:string, end?:strin
 				else {
 					const result = await prisma.downloadedVideo.create({
 						data: {
+							title: videoInfo.title,
 							filename: filename,
 							platform: "Youtube",
 							platformId: videoKey,
