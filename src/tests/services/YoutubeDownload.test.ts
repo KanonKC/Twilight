@@ -1,6 +1,5 @@
-import { videoTrim } from "../../services/video-trim"
-import { youtubeDownload } from "../../services/youtube-download"
-import { downloadYoutubeVideo } from "../../services/download-youtube-video"
+import { downloadYoutubeVideo } from "../../services/downloads/platforms/download-youtube-video"
+
 
 downloadYoutubeVideo("https://www.youtube.com/watch?v=fcIzdpWy4T8","2:21","2:42").then((video) => {
     console.log("Download completed, trimming video ...")

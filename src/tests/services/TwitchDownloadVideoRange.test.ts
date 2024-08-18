@@ -1,8 +1,4 @@
-import { describe, it } from "node:test";
-import { twitchDownload } from "../../services/twitch-download";
-import { videoTrim } from "../../services/video-trim";
-import { expect } from "chai";
-import { downloadTwitchVideo } from "../../services/download-twitch-video";
+import { downloadTwitchVideo } from "../../services/downloads/platforms/download-twitch-video"
 
 downloadTwitchVideo(
     "https://www.twitch.tv/videos/2165090720",
