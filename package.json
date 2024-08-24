@@ -1,4 +1,7 @@
 {
+  "name": "stream-manage",
+  "version": "1.0.0",
+  "description": "",
   "dependencies": {
     "@prisma/client": "^5.18.0",
     "chai": "^5.1.1",
