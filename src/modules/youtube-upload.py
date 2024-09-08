@@ -173,15 +173,10 @@ if __name__ == '__main__':
                            default=VALID_PRIVACY_STATUSES[0], help="Video privacy status.")
     args = argparser.parse_args()
 
-    # print("-------------------------------------")
-    # print(args)
-    # print("-------------------------------------")
-
     if not os.path.exists(args.file):
         exit("Please specify a valid file using the --file= parameter.")
 
     youtube = get_authenticated_service(args)
-    # print(youtube)
     try:
         initialize_upload(youtube, args)
     except HttpError as e:

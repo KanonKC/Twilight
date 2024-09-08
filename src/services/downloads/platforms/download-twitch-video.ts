@@ -12,10 +12,13 @@ configDotenv();
 
 export async function downloadTwitchVideo(url:string, start?:string, end?:string):Promise<DownloadedVideo> {
 
-    const videoInfo = await getTwitchVideoData(url)
-    // const randomString = generateRandomString(4)
-    // const id = `twitch_${videoInfo.id}_${randomString}`
-    // const filename = `${id}.mp4`
+    // const videoInfo = await getTwitchVideoData(url)
+
+    // Don't forget to fix this
+    const videoInfo = {
+        id: generateRandomString(10),
+        title: undefined
+    }
 
     let videoId:string;
     let filename:string;

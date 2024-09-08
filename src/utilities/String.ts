@@ -6,3 +6,9 @@ export function generateRandomString(length:number):string {
     }
     return result;
 }
+
+export function escapeUnicode(str: string) {
+    return str.replace(/[^\0-~]/g, function(ch: string) {
+        return "\\u" + ("0000" + ch.charCodeAt(0).toString(16)).slice(-4);
+    });
+}
