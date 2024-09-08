@@ -1,10 +1,12 @@
-import { DownloadVideoAttribute } from "../models/types";
-
 export interface DownloadedVideo {
     id: string;
     filaneme: string;
     platform: "Youtube" | "Twitch";
     platformId: string;
+    title: string;
+}
+
+export interface YoutubeVideo {
     title: string;
 }
 
@@ -32,8 +34,8 @@ export interface TwitchVideo {
 }
 
 export interface VideoTrimResult {
-    originalVideo: DownloadVideoAttribute;
-    editedVideo: DownloadVideoAttribute;
+    originalVideo: DownloadedVideo;
+    editedVideo: DownloadedVideo;
     start: number;
     end: number;
 }
@@ -50,7 +52,7 @@ export interface DownloadManyVideoRequest {
 
 export interface DownloadManyVideoResponse {
     videos: {
-        video: DownloadVideoAttribute,
+        video: DownloadedVideo,
         trimmedVideos: VideoTrimResult[]
     }[]
 }

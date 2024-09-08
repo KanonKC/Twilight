@@ -1,10 +1,6 @@
-import { describe, it } from "node:test";
-import { twitchDownload } from "../../services/twitch-download";
-import { videoTrim } from "../../services/video-trim";
-import { expect } from "chai";
-import { twitchDownloadRange } from "../../services/twitch-download-range";
+import { downloadTwitchVideo } from "../../services/downloads/platforms/download-twitch-video"
 
-twitchDownloadRange(
+downloadTwitchVideo(
     "https://www.twitch.tv/videos/2165090720",
     "0:43:31",
     "1:00:40",
@@ -35,7 +31,7 @@ twitchDownloadRange(
 //     })
 //     it("should trim a video from Twitch", async () => {
 //         const video = await twitchDownload("https://www.twitch.tv/videos/1214826771")
-//         const trimmedVideo = await videoTrim(video.dataValues,6,8)
+//         const trimmedVideo = await videoTrim(video,6,8)
 //         expect(trimmedVideo).haveOwnProperty("id")
 //         expect(trimmedVideo).haveOwnProperty("filename")
 //         expect(trimmedVideo).haveOwnProperty("platform")
