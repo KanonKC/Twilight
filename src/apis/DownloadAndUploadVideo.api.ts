@@ -15,10 +15,10 @@ export interface SourceVideoHighlight {
     }[]
 }
 
-export interface  DownloadManyHighlightsFromManyVideosAndExportRequest {
+export interface  DownloadAndUploadVideoRequest {
     sources: {
         url: string;
-        highlights: {
+        highlights?: {
             start: string;
             end: string;
         }[]
@@ -33,18 +33,15 @@ export interface DownloadedVideoHighlight {
     downloadVideo: DownloadedVideo
 }
 
-export interface  DownloadManyHighlightsFromManyVideosAndExportResponse {
-    sources: {
-        url: string;
-        highlights: DownloadedVideoHighlight[]
-    }[],
+export interface  DownloadAndUploadVideoResponse {
+    sources: DownloadedVideo[];
     concatVideo: ConcatenatedVideo | null;
     youtubeVideoId: string | null;
 }
 
-export async function downloadManyHighlightsFromManyVideosAndExportAPI(payload: DownloadManyHighlightsFromManyVideosAndExportRequest): Promise<DownloadManyHighlightsFromManyVideosAndExportResponse> {
+export async function downloadAndUploadVideoAPI(payload: DownloadAndUploadVideoRequest): Promise<DownloadAndUploadVideoResponse> {
     
-    const response:DownloadManyHighlightsFromManyVideosAndExportResponse = {
+    const response:DownloadAndUploadVideoResponse = {
         sources: [],
         concatVideo: null,
         youtubeVideoId: null
@@ -62,15 +59,26 @@ export async function downloadManyHighlightsFromManyVideosAndExportAPI(payload: 
             highlights: []
         }
         
-        for (const highlight of source.highlights) {
-            const video = await downloadRange(source.url, highlight.start, highlight.end)
-            sourceResponse.highlights.push({
-                start: highlight.start,
-                end: highlight.end,
-                downloadVideo: video
-            })
-            highlightFilenames.push(video.filename)
+        if (source.highlights && source.highlights.length > 0) {
+
+            for (const highlight of source.highlights) {
+                const video = await downloadRange(source.url, highlight.start, highlight.end)
+                sourceResponse.highlights.push({
+                    start: highlight.start,
+                    end: highlight.end,
+                    downloadVideo: video
+                })
+                highlightFilenames.push(video.filename)
+                response.sources.push(video)
+            }
+
         }
+        else {
+            const video = await downloadRange(source.url)
+            highlightFilenames.push(video.filename)
+            response.sources.push(video)
+        }
+
     }
 
     if (payload.concat || payload.youtube) {

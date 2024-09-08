@@ -10,3 +10,5 @@ build
 
 add-music-to-playlist.ipynb
 pm2.sh
+
+dumps/
