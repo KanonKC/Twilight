@@ -1,5 +1,5 @@
 import { configDotenv } from 'dotenv'
-import server from './route'
+import server from './router'
 
 configDotenv()
 const PORT = Number(process.env.PORT) || 8081
