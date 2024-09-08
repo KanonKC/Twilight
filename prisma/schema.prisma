@@ -14,14 +14,18 @@ datasource db {
 }
 
 model DownloadedVideo {
-    id          Int      @id @default(autoincrement())
-    filename    String   @unique
-    platform    String
-    platformId  String
-    title       String?
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
-    concatVideos DownloadedConcatenatedVideo[]
+    id                  Int      @id @default(autoincrement())
+    filename            String   @unique
+    platform            String
+    platformId          String
+    url                 String
+    title               String?
+    startTime           Int?
+    endTime             Int?
+    duration            Int
+    createdAt           DateTime @default(now())
+    updatedAt           DateTime @updatedAt
+    concatVideos        DownloadedConcatenatedVideo[]
 }
 
 model ConcatenatedVideo {
