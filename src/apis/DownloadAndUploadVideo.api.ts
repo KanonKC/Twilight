@@ -34,10 +34,7 @@ export interface DownloadedVideoHighlight {
 }
 
 export interface  DownloadAndUploadVideoResponse {
-    sources: {
-        url: string;
-        highlights: DownloadedVideoHighlight[]
-    }[],
+    sources: DownloadedVideo[];
     concatVideo: ConcatenatedVideo | null;
     youtubeVideoId: string | null;
 }
@@ -72,13 +69,16 @@ export async function downloadAndUploadVideoAPI(payload: DownloadAndUploadVideoR
                     downloadVideo: video
                 })
                 highlightFilenames.push(video.filename)
+                response.sources.push(video)
             }
 
         }
         else {
             const video = await downloadRange(source.url)
             highlightFilenames.push(video.filename)
+            response.sources.push(video)
         }
+
     }
 
     if (payload.concat || payload.youtube) {
