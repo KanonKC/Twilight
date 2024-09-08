@@ -15,10 +15,10 @@ export interface SourceVideoHighlight {
     }[]
 }
 
-export interface  DownloadManyHighlightsFromManyVideosAndExportRequest {
+export interface  DownloadAndUploadVideoRequest {
     sources: {
         url: string;
-        highlights: {
+        highlights?: {
             start: string;
             end: string;
         }[]
@@ -33,7 +33,7 @@ export interface DownloadedVideoHighlight {
     downloadVideo: DownloadedVideo
 }
 
-export interface  DownloadManyHighlightsFromManyVideosAndExportResponse {
+export interface  DownloadAndUploadVideoResponse {
     sources: {
         url: string;
         highlights: DownloadedVideoHighlight[]
@@ -42,9 +42,9 @@ export interface  DownloadManyHighlightsFromManyVideosAndExportResponse {
     youtubeVideoId: string | null;
 }
 
-export async function downloadManyHighlightsFromManyVideosAndExportAPI(payload: DownloadManyHighlightsFromManyVideosAndExportRequest): Promise<DownloadManyHighlightsFromManyVideosAndExportResponse> {
+export async function downloadAndUploadVideoAPI(payload: DownloadAndUploadVideoRequest): Promise<DownloadAndUploadVideoResponse> {
     
-    const response:DownloadManyHighlightsFromManyVideosAndExportResponse = {
+    const response:DownloadAndUploadVideoResponse = {
         sources: [],
         concatVideo: null,
         youtubeVideoId: null
@@ -62,13 +62,21 @@ export async function downloadManyHighlightsFromManyVideosAndExportAPI(payload: 
             highlights: []
         }
         
-        for (const highlight of source.highlights) {
-            const video = await downloadRange(source.url, highlight.start, highlight.end)
-            sourceResponse.highlights.push({
-                start: highlight.start,
-                end: highlight.end,
-                downloadVideo: video
-            })
+        if (source.highlights && source.highlights.length > 0) {
+
+            for (const highlight of source.highlights) {
+                const video = await downloadRange(source.url, highlight.start, highlight.end)
+                sourceResponse.highlights.push({
+                    start: highlight.start,
+                    end: highlight.end,
+                    downloadVideo: video
+                })
+                highlightFilenames.push(video.filename)
+            }
+
+        }
+        else {
+            const video = await downloadRange(source.url)
             highlightFilenames.push(video.filename)
         }
     }

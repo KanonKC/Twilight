@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { downloadVideoAPI } from "../apis/DownloadVideo.api";
+import { downloadAndUploadVideoAPI } from "../apis/DownloadAndUploadVideo.api";
 
 export type DownloadVideoController = FastifyRequest<{
     Body: {
@@ -9,6 +9,8 @@ export type DownloadVideoController = FastifyRequest<{
 
 export async function downloadVideoController(request: DownloadVideoController, reply: FastifyReply) {
     const { url } = request.body
-    const video = await downloadVideoAPI(url)
+    const video = await downloadAndUploadVideoAPI({
+        sources: [ { url } ]
+    })
     return reply.send(video)
 }
