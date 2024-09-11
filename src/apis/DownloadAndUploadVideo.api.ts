@@ -4,6 +4,7 @@ import { videoConcat } from "../services/videos/video-concat";
 import { YoutubeUploadVideoDetail } from "../types/Youtube";
 import { youtubeUpload } from "../services/uploads/youtube-upload";
 import { configDotenv } from "dotenv";
+import { extendDownloadedVideoData } from "../utilities/Video";
 
 configDotenv()
 
@@ -69,14 +70,14 @@ export async function downloadAndUploadVideoAPI(payload: DownloadAndUploadVideoR
                     downloadVideo: video
                 })
                 highlightFilenames.push(video.filename)
-                response.sources.push(video)
+                response.sources.push(extendDownloadedVideoData(video))
             }
 
         }
         else {
             const video = await downloadRange(source.url)
             highlightFilenames.push(video.filename)
-            response.sources.push(video)
+            response.sources.push(extendDownloadedVideoData(video))
         }
 
     }

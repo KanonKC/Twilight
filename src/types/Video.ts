@@ -1,9 +1,7 @@
-export interface DownloadedVideo {
-    id: string;
-    filaneme: string;
-    platform: "Youtube" | "Twitch";
-    platformId: string;
-    title: string;
+import { DownloadedVideo } from "@prisma/client";
+
+export interface ExtendedDownloadedVideo extends DownloadedVideo {
+    durationMilliseconds: number;
 }
 
 export interface YoutubeVideo {
