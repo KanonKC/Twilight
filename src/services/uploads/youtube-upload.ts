@@ -1,5 +1,5 @@
 import { exec } from "child_process";
-import { YoutubeUploadVideoDetail } from "../../types/Youtube";
+import { YoutubeUploadVideoDetail } from "../../types/Youtube.type";
 
 export interface YoutubeUploadVideoResponse {
 	videoId: string;
