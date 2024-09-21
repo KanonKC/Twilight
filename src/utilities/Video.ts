@@ -1,5 +1,5 @@
 import { DownloadedVideo } from "@prisma/client";
-import { ExtendedDownloadedVideo } from "../types/Video";
+import { ExtendedDownloadedVideo } from "../types/DownloadVideo.type";
 
 export function extendDownloadedVideoData(downloadedVideo: DownloadedVideo): ExtendedDownloadedVideo {
     return {

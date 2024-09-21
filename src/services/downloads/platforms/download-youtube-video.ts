@@ -8,15 +8,32 @@ import { prisma } from "../../../prisma";
 import { getYoutubeVideoData } from "./get-youtube-video-data";
 import { getVideoDuration } from "../../videos/get-video-duration";
 import { convertHHMMSSStringToSeconds } from "../../../utilities/Time";
+import { DownloadVideoOptions } from "../../../types/DownloadVideo.type";
 
 configDotenv();
 
-export async function downloadYoutubeVideo(url:string, start?:string, end?:string):Promise<DownloadedVideo> {
+export async function downloadYoutubeVideo(url:string, options?: DownloadVideoOptions):Promise<DownloadedVideo> {
 	const videoKey = getYoutubeVideoKey(url);
 
 	let filename:string;
 	let command:string;
     let timeRange = {}
+
+    let start:string | undefined;
+    let end:string | undefined;
+    let width:number | undefined;
+    let height:number | undefined;
+
+    if (options) {
+        if (options.range) {
+            start = options.range.start
+            end = options.range.end
+        }
+        if (options.resolution) {
+            width = options.resolution.width
+            height = options.resolution.height
+        }
+    }
 
 	const videoInfo = await getYoutubeVideoData(url);
 	

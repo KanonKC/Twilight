@@ -1,5 +1,5 @@
 import { exec } from "child_process";
-import { TwitchVideo } from "../../../types/Video";
+import { TwitchVideo } from "../../../types/DownloadVideo.type";
 
 export function getTwitchVideoData(url:string):Promise<TwitchVideo> {
     return new Promise((resolve, reject) => {
