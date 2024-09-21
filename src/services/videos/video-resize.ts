@@ -11,7 +11,7 @@ export async function videoResize(filename:string, width: number, height: number
 }> {
     
     const generateString = generateRandomString(8)
-    const videoId = `${filename}_resize_${generateString}`
+    const videoId = `${filename.split(".")[0]}_resize_${generateString}`
     const outputFilename = `${videoId}.mp4`;
     
     return new Promise((resolve, reject) => {
