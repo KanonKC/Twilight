@@ -18,7 +18,6 @@ export function getYoutubeVideoData(url:string):Promise<YoutubeVideo> {
                     resolve(output as YoutubeVideo)
                 }
                 else {
-                    // throw new Error(stderr);
                     reject(stderr)
                 }
             }
