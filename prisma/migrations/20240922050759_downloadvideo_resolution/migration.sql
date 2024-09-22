@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `downloadedvideo` ADD COLUMN `height` INTEGER NOT NULL DEFAULT 1080,
+    ADD COLUMN `width` INTEGER NOT NULL DEFAULT 1920;

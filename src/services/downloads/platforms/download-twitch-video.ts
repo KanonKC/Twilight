@@ -68,10 +68,16 @@ export async function downloadTwitchVideo(url:string, options?: DownloadVideoOpt
                     
                     const duration = await getVideoDuration(filename)
 
+                    const resolution = await getVideoResolution(filename)
+                    
+                    let profileWidth = resolution.width;
+                    let profileHeight = resolution.height;
+
                     if (width && height) {
-                        const resolution = await getVideoResolution(filename)
                         if (resolution.width !== width || resolution.height !== height) {
                             const resizedFilename = await videoResize(filename, width, height)
+                            profileWidth = width;
+                            profileHeight = height;
                             filename = resizedFilename.filename
                         }
                     }
@@ -84,6 +90,8 @@ export async function downloadTwitchVideo(url:string, options?: DownloadVideoOpt
                             duration: duration,
                             platform: "Twitch",
                             platformId: videoInfo.id,
+                            width: profileWidth,
+                            height: profileHeight,
                             ...timeRange
                         }
                     })

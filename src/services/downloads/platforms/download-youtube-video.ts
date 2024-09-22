@@ -9,6 +9,8 @@ import { getYoutubeVideoData } from "./get-youtube-video-data";
 import { getVideoDuration } from "../../videos/get-video-duration";
 import { convertHHMMSSStringToSeconds } from "../../../utilities/Time";
 import { DownloadVideoOptions } from "../../../types/DownloadVideo.type";
+import { getVideoResolution } from "../../videos/get-video-resolution";
+import { videoResize } from "../../videos/video-resize";
 
 configDotenv();
 
@@ -52,13 +54,27 @@ export async function downloadYoutubeVideo(url:string, options?: DownloadVideoOp
 	return new Promise((resolve, reject) => {
 		exec(
 			command,
-			async (error, stdout, stderr) => {
+			async (error) => {
 				if (error) {
 					reject(error)
 				}
 				else {
 
                     const duration = await getVideoDuration(filename)
+
+                    const resolution = await getVideoResolution(filename)
+                    
+                    let profileWidth = resolution.width;
+                    let profileHeight = resolution.height;
+
+                    if (width && height) {
+                        if (resolution.width !== width || resolution.height !== height) {
+                            const resizedFilename = await videoResize(filename, width, height)
+                            profileWidth = width;
+                            profileHeight = height;
+                            filename = resizedFilename.filename
+                        }
+                    }
 
 					const result = await prisma.downloadedVideo.create({
 						data: {
@@ -68,6 +84,8 @@ export async function downloadYoutubeVideo(url:string, options?: DownloadVideoOp
                             duration: duration,
 							platform: "Youtube",
 							platformId: videoKey,
+                            width: profileWidth,
+                            height: profileHeight,
                             ...timeRange
 						}
 					});
