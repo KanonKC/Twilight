@@ -4,6 +4,17 @@ export interface ExtendedDownloadedVideo extends DownloadedVideo {
     durationMilliseconds: number;
 }
 
+export interface DownloadVideoOptions {
+    range?: {
+        start: string;
+        end: string;
+    },
+    resolution?: {
+        width: number;
+        height: number;
+    }
+}
+
 export interface YoutubeVideo {
     title: string;
 }
@@ -54,4 +65,3 @@ export interface DownloadManyVideoResponse {
         trimmedVideos: VideoTrimResult[]
     }[]
 }
-

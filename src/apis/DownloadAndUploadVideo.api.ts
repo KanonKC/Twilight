@@ -1,7 +1,7 @@
 import { ConcatenatedVideo, DownloadedVideo } from "@prisma/client";
 import { downloadRange } from "../services/downloads";
 import { videoConcat } from "../services/videos/video-concat";
-import { YoutubeUploadVideoDetail } from "../types/Youtube";
+import { YoutubeUploadVideoDetail } from "../types/Youtube.type";
 import { youtubeUpload } from "../services/uploads/youtube-upload";
 import { configDotenv } from "dotenv";
 import { extendDownloadedVideoData } from "../utilities/Video";
@@ -19,6 +19,7 @@ export interface SourceVideoHighlight {
 export interface  DownloadAndUploadVideoRequest {
     sources: {
         url: string;
+        resolution?: { width: number, height: number }
         highlights?: {
             start: string;
             end: string;
@@ -63,7 +64,13 @@ export async function downloadAndUploadVideoAPI(payload: DownloadAndUploadVideoR
         if (source.highlights && source.highlights.length > 0) {
 
             for (const highlight of source.highlights) {
-                const video = await downloadRange(source.url, highlight.start, highlight.end)
+                const video = await downloadRange(source.url, {
+                    range: {
+                        start: highlight.start,
+                        end: highlight.end
+                    },
+                    resolution: source.resolution
+                })
                 sourceResponse.highlights.push({
                     start: highlight.start,
                     end: highlight.end,
@@ -75,7 +82,9 @@ export async function downloadAndUploadVideoAPI(payload: DownloadAndUploadVideoR
 
         }
         else {
-            const video = await downloadRange(source.url)
+            const video = await downloadRange(source.url, {
+                resolution: source.resolution
+            })
             highlightFilenames.push(video.filename)
             response.sources.push(extendDownloadedVideoData(video))
         }
@@ -83,6 +92,7 @@ export async function downloadAndUploadVideoAPI(payload: DownloadAndUploadVideoR
     }
 
     if (payload.concat || payload.youtube) {
+        
         const concatVideo = await videoConcat(highlightFilenames, undefined)
         response.concatVideo = concatVideo
 
@@ -90,6 +100,7 @@ export async function downloadAndUploadVideoAPI(payload: DownloadAndUploadVideoR
             const youtubeUploadResponse = await youtubeUpload(`${process.env.VIDEO_STORAGE_PATH}/${concatVideo.filename}`, payload.youtube)
             response.youtubeVideoId = youtubeUploadResponse.videoId
         }
+
     }
 
     return response

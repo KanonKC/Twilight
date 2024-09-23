@@ -13,7 +13,10 @@ import { downloadAndUploadVideoAPI } from "../../apis/DownloadAndUploadVideo.api
 // })
 
 downloadAndUploadVideoAPI({
-    sources: [{ url: "https://www.twitch.tv/porjungz/clip/FrigidSecretiveDragonfruitTheThing-_E-XdjP0oDXEjo4g"}]
+    sources: [{ url: "https://www.twitch.tv/porjungz/clip/FrigidSecretiveDragonfruitTheThing-_E-XdjP0oDXEjo4g", resolution: {
+        width: 1920,
+        height: 1080
+    }}]
 }).then((response) => {
     console.log(response)
 })

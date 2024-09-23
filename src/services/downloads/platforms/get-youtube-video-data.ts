@@ -1,5 +1,5 @@
 import { exec } from "child_process";
-import { YoutubeVideo } from "../../../types/Video";
+import { YoutubeVideo } from "../../../types/DownloadVideo.type";
 
 export function getYoutubeVideoData(url:string):Promise<YoutubeVideo> {
     return new Promise((resolve, reject) => {
@@ -18,7 +18,6 @@ export function getYoutubeVideoData(url:string):Promise<YoutubeVideo> {
                     resolve(output as YoutubeVideo)
                 }
                 else {
-                    // throw new Error(stderr);
                     reject(stderr)
                 }
             }

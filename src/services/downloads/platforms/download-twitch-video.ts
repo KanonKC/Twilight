@@ -8,12 +8,29 @@ import { prisma } from "../../../prisma";
 import { generateRandomString } from "../../../utilities/String";
 import { getVideoDuration } from "../../videos/get-video-duration";
 import { convertHHMMSSStringToSeconds } from "../../../utilities/Time";
+import { DownloadVideoOptions } from "../../../types/DownloadVideo.type";
+import { getVideoResolution } from "../../videos/get-video-resolution";
+import { videoResize } from "../../videos/video-resize";
 
 configDotenv();
 
-export async function downloadTwitchVideo(url:string, start?:string, end?:string):Promise<DownloadedVideo> {
+export async function downloadTwitchVideo(url:string, options?: DownloadVideoOptions):Promise<DownloadedVideo> {
 
-    // const videoInfo = await getTwitchVideoData(url)
+    let start:string | undefined;
+    let end:string | undefined;
+    let width:number | undefined;
+    let height:number | undefined;
+
+    if (options) {
+        if (options.range) {
+            start = options.range.start
+            end = options.range.end
+        }
+        if (options.resolution) {
+            width = options.resolution.width
+            height = options.resolution.height
+        }
+    }
 
     // Don't forget to fix this
     const videoInfo = {
@@ -43,13 +60,27 @@ export async function downloadTwitchVideo(url:string, start?:string, end?:string
     return new Promise((resolve, reject) => {
         exec(
 			command,
-			async (error, stdout, stderr) => {
+			async (error) => {
 				if (error) {
                     throw new Error(error.message)
 				}
 				else {
                     
                     const duration = await getVideoDuration(filename)
+
+                    const resolution = await getVideoResolution(filename)
+                    
+                    let profileWidth = resolution.width;
+                    let profileHeight = resolution.height;
+
+                    if (width && height) {
+                        if (resolution.width !== width || resolution.height !== height) {
+                            const resizedFilename = await videoResize(filename, width, height)
+                            profileWidth = width;
+                            profileHeight = height;
+                            filename = resizedFilename.filename
+                        }
+                    }
 
                     const result = await prisma.downloadedVideo.create({
                         data: {
@@ -59,6 +90,8 @@ export async function downloadTwitchVideo(url:string, start?:string, end?:string
                             duration: duration,
                             platform: "Twitch",
                             platformId: videoInfo.id,
+                            width: profileWidth,
+                            height: profileHeight,
                             ...timeRange
                         }
                     })
