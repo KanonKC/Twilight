@@ -11,5 +11,8 @@ build
 add-music-to-playlist.ipynb
 pm2.sh
 
-dumps/
+dumps/*.mp4
+dumps/*.tmp
+dumps/*.part
+dumps/*.ytdl
 app/

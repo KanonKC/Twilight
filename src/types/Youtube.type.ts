@@ -3,4 +3,5 @@ export interface YoutubeUploadVideoDetail {
     description?: string;
     tags?: string[];
     privacyStatus?: "public" | "private" | "unlisted";
+    includeTwitchChat?: boolean;
 }

@@ -21,3 +21,7 @@ export function getYoutubeVideoKey(url:string):string {
         return url
     }
 }
+
+export function getTwitchVideoKey(url:string):string {
+    return url.split("/").pop() as string;
+}

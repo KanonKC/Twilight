@@ -38,17 +38,19 @@ export async function downloadYoutubeVideo(url:string, options?: DownloadVideoOp
     }
 
 	const videoInfo = await getYoutubeVideoData(url);
+    const baseCommand = `yt-dlp --paths "./${process.env.VIDEO_STORAGE_PATH}" -f "bestvideo+bestaudio[ext=mp4]/best" --merge-output-format mp4`
+    // const baseCommand = `yt-dlp --cookies-from-browser firefox --paths "./${process.env.VIDEO_STORAGE_PATH}" -f "bestvideo+bestaudio[ext=mp4]/best" --merge-output-format mp4`
 	
 	if (start && end) {
 		const startText = start.split(':').join("_");
 		const endText = end.split(':').join("_");
 		filename = `youtube_${videoKey}_range_${startText}-${endText}_${generateRandomString(4)}.mp4`;
-		command = `yt-dlp --cookies-from-browser firefox --paths "./${process.env.VIDEO_STORAGE_PATH}" -f "bestvideo+bestaudio[ext=mp4]/best" --merge-output-format mp4 --download-sections "*${start}-${end}" "${videoKey}" -o "${filename}"`
+		command = `${baseCommand} --download-sections "*${start}-${end}" "${videoKey}" -o "${filename}"`
         timeRange = {startTime: convertHHMMSSStringToSeconds(start), endTime: convertHHMMSSStringToSeconds(end)}
     }
 	else {
 		filename = `youtube_${videoKey}_${generateRandomString(4)}.mp4`;
-		command = `yt-dlp --cookies-from-browser firefox --paths "./${process.env.VIDEO_STORAGE_PATH}" -f "bestvideo+bestaudio[ext=mp4]/best" --merge-output-format mp4 "${videoKey}" -o "${filename}"`
+		command = `${baseCommand} "${videoKey}" -o "${filename}"`
 	}
 
 	return new Promise((resolve, reject) => {
