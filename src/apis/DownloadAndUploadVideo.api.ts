@@ -5,6 +5,8 @@ import { YoutubeUploadVideoDetail } from "../types/Youtube.type";
 import { youtubeUpload } from "../services/uploads/youtube-upload";
 import { configDotenv } from "dotenv";
 import { extendDownloadedVideoData } from "../utilities/Video";
+import { getAudioSpike } from "../services/videos/get-audio-spike";
+import { convertHHMMSSStringToSeconds, convertSecondsToHHMMSSString } from "../utilities/Time";
 
 configDotenv()
 
@@ -23,7 +25,8 @@ export interface  DownloadAndUploadVideoRequest {
         highlights?: {
             start: string;
             end: string;
-        }[]
+        }[],
+        autoHighlights?: boolean
     }[],
     concat?: boolean;
     youtube?: YoutubeUploadVideoDetail | null | undefined;
@@ -60,10 +63,44 @@ export async function downloadAndUploadVideoAPI(payload: DownloadAndUploadVideoR
             url: source.url,
             highlights: []
         }
-        
-        if (source.highlights && source.highlights.length > 0) {
 
-            for (const highlight of source.highlights) {
+        let totalSourceHighlights: {
+            start: string;
+            end: string;
+        }[] = []
+
+        if (source.autoHighlights) {
+            const video = await downloadRange(source.url, {
+                resolution: source.resolution
+            })
+
+            const audioSpike = await getAudioSpike(`${process.env.VIDEO_STORAGE_PATH}/${video.filename}`)
+            for (const spike of audioSpike) {
+                
+                let start = Math.floor(spike) - 10
+                if (start < 0) {
+                    start = 0
+                }
+
+                let end = Math.floor(spike) + 20
+                if (end > video.duration) {
+                    end = video.duration
+                }
+                
+                totalSourceHighlights.push({
+                    start: convertSecondsToHHMMSSString(start),
+                    end: convertSecondsToHHMMSSString(end)
+                })
+            }
+        }
+        
+        if (source.highlights && source.highlights.length > 0 || source.autoHighlights) {
+
+            if (source.highlights && source.highlights.length > 0) {
+                totalSourceHighlights.push(...source.highlights)
+            }
+
+            for (const highlight of totalSourceHighlights) {
                 const video = await downloadRange(source.url, {
                     range: {
                         start: highlight.start,
