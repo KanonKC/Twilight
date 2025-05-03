@@ -14,6 +14,8 @@ import { videoResize } from "../../videos/video-resize";
 
 configDotenv();
 
+
+
 export async function downloadYoutubeVideo(url:string, options?: DownloadVideoOptions):Promise<DownloadedVideo> {
 	const videoKey = getYoutubeVideoKey(url);
 
@@ -38,8 +40,8 @@ export async function downloadYoutubeVideo(url:string, options?: DownloadVideoOp
     }
 
 	const videoInfo = await getYoutubeVideoData(url);
-    const baseCommand = `yt-dlp --paths "./${process.env.VIDEO_STORAGE_PATH}" -f "bestvideo+bestaudio[ext=mp4]/best" --merge-output-format mp4`
-    // const baseCommand = `yt-dlp --cookies-from-browser firefox --paths "./${process.env.VIDEO_STORAGE_PATH}" -f "bestvideo+bestaudio[ext=mp4]/best" --merge-output-format mp4`
+    // const baseCommand = `yt-dlp --paths "./${process.env.VIDEO_STORAGE_PATH}" -f "bestvideo+bestaudio[ext=mp4]/best" --merge-output-format mp4`
+    const baseCommand = `yt-dlp --cookies-from-browser firefox --paths "./${process.env.VIDEO_STORAGE_PATH}" -f "bestvideo+bestaudio[ext=mp4]/best" --merge-output-format mp4`
 	
 	if (start && end) {
 		const startText = start.split(':').join("_");
@@ -53,48 +55,71 @@ export async function downloadYoutubeVideo(url:string, options?: DownloadVideoOp
 		command = `${baseCommand} "${videoKey}" -o "${filename}"`
 	}
 
-	return new Promise((resolve, reject) => {
-		exec(
-			command,
-			async (error) => {
-				if (error) {
-					reject(error)
-				}
-				else {
+    if (true) {
+        command = `${command} -4`
+    }
+    console.log(command)
 
-                    const duration = await getVideoDuration(filename)
-
-                    const resolution = await getVideoResolution(filename)
-                    
-                    let profileWidth = resolution.width;
-                    let profileHeight = resolution.height;
-
-                    if (width && height) {
-                        if (resolution.width !== width || resolution.height !== height) {
-                            const resizedFilename = await videoResize(filename, width, height)
-                            profileWidth = width;
-                            profileHeight = height;
-                            filename = resizedFilename.filename
-                        }
+    async function tryDownloadYoutubeVideo(url:string, options?: DownloadVideoOptions): Promise<DownloadedVideo> {
+        return new Promise((resolve, reject) => {
+            exec(
+                command,
+                async (error) => {
+                    if (error) {
+                        reject(error)
                     }
+                    else {
+    
+                        const duration = await getVideoDuration(filename)
+    
+                        const resolution = await getVideoResolution(filename)
+                        
+                        let profileWidth = resolution.width;
+                        let profileHeight = resolution.height;
+    
+                        if (width && height) {
+                            if (resolution.width !== width || resolution.height !== height) {
+                                const resizedFilename = await videoResize(filename, width, height)
+                                profileWidth = width;
+                                profileHeight = height;
+                                filename = resizedFilename.filename
+                            }
+                        }
+    
+                        const result = await prisma.downloadedVideo.create({
+                            data: {
+                                title: videoInfo.title,
+                                filename: filename,
+                                url: url,
+                                duration: duration,
+                                platform: "Youtube",
+                                platformId: videoKey,
+                                width: profileWidth,
+                                height: profileHeight,
+                                ...timeRange
+                            }
+                        });
+    
+                        resolve(result)
+                    }
+                }
+            );
+        });
+    }
 
-					const result = await prisma.downloadedVideo.create({
-						data: {
-							title: videoInfo.title,
-							filename: filename,
-                            url: url,
-                            duration: duration,
-							platform: "Youtube",
-							platformId: videoKey,
-                            width: profileWidth,
-                            height: profileHeight,
-                            ...timeRange
-						}
-					});
+	let count = 0
 
-					resolve(result)
-				}
-			}
-		);
-	});
+    while (count <= 100) {
+        try {
+            const result = await tryDownloadYoutubeVideo(url, options)
+            return result
+        }
+        catch (error) {
+            count++
+            console.log(`Failed to download youtube video ${url}, retrying... (${count}/100)`, error)
+            setTimeout(() => {}, 10* 1000)
+        }
+    }
+
+    throw new Error("Failed to download youtube video command: " + command)
 }

@@ -12,7 +12,8 @@ export interface DownloadVideoOptions {
     resolution?: {
         width: number;
         height: number;
-    }
+    },
+    ipv4?: boolean;
 }
 
 export interface YoutubeVideo {
