@@ -3,7 +3,7 @@ import FFmpeg from "../../externals/ffmpeg/ffmpeg";
 import { Config } from "../../configs";
 import { prisma } from "../../prisma";
 
-export default class ConcatenatedVideoService {
+export default class ConcatenatedService {
 	
     private ffmpeg: FFmpeg;
     
