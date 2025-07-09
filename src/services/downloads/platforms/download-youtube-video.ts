@@ -41,7 +41,8 @@ export async function downloadYoutubeVideo(url:string, options?: DownloadVideoOp
 
 	const videoInfo = await getYoutubeVideoData(url);
     // const baseCommand = `yt-dlp --paths "./${process.env.VIDEO_STORAGE_PATH}" -f "bestvideo+bestaudio[ext=mp4]/best" --merge-output-format mp4`
-    const baseCommand = `yt-dlp --cookies-from-browser firefox --paths "./${process.env.VIDEO_STORAGE_PATH}" -f "bestvideo+bestaudio[ext=mp4]/best" --merge-output-format mp4`
+    // const baseCommand = `yt-dlp --cookies-from-browser firefox --paths "./${process.env.VIDEO_STORAGE_PATH}" -f "bestvideo+bestaudio[ext=mp4]/best" --merge-output-format mp4`
+    const baseCommand = `yt-dlp --cookies-from-browser firefox --paths "./${process.env.VIDEO_STORAGE_PATH}" --merge-output-format mp4`
 	
 	if (start && end) {
 		const startText = start.split(':').join("_");
@@ -56,8 +57,10 @@ export async function downloadYoutubeVideo(url:string, options?: DownloadVideoOp
 	}
 
     if (true) {
+        // TODO: Handle IPv4 options flag
         command = `${command} -4`
     }
+
     console.log(command)
 
     async function tryDownloadYoutubeVideo(url:string, options?: DownloadVideoOptions): Promise<DownloadedVideo> {

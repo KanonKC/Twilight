@@ -15,4 +15,5 @@ dumps/*.mp4
 dumps/*.tmp
 dumps/*.part
 dumps/*.ytdl
+dumps/audio-spike-graph/*.png
 app/
