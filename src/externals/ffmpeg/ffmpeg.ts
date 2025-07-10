@@ -1,9 +1,8 @@
+import { DownloadedVideo } from "@prisma/client";
 import { exec } from "child_process";
-import { ConcatenatedVideo, DownloadedVideo } from "@prisma/client";
-import { getTwitchVideoData } from "../../services/downloads/platforms/get-twitch-video-data";
 import { Config } from "../../configs";
-import { generateRandomString } from "../../utilities/String";
 import { VideoTrimResult } from "../../types/DownloadVideo.type";
+import { generateRandomString } from "../../utilities/String";
 import { convertHHMMSSStringToSeconds, convertSecondsToHHMMSSString } from "../../utilities/Time";
 
 export default class FFmpeg {

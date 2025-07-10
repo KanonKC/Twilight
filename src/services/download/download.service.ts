@@ -7,7 +7,6 @@ import { DownloadVideoOptions, ExtendedDownloadedVideo } from "../../types/Downl
 import { convertHHMMSSStringToSeconds } from "../../utilities/Time";
 import { VideoProfile } from "./response";
 import { Config } from "../../configs";
-import { getVaultVideo } from "../videos/get-vault-video";
 
 export default class DownloadService {
 	private ffmpeg: FFmpeg;
