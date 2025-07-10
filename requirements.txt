@@ -175,4 +175,4 @@ websocket-client==1.6.2
 websockets==12.0
 whitenoise==4.1
 widgetsnbextension==4.0.8
-yt-dlp==2024.4.9
+yt-dlp==2025.4.30.232944.dev0
