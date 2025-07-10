@@ -1,3 +1,4 @@
+import { DownloadedVideo } from "@prisma/client";
 import FFmpeg from "../../externals/ffmpeg/ffmpeg";
 import TwitchDl from "../../externals/twitch-dl/twitch-dl";
 import YtDlp from "../../externals/yt-dlp/yt-dlp";
@@ -5,16 +6,19 @@ import { prisma } from "../../prisma";
 import { DownloadVideoOptions } from "../../types/DownloadVideo.type";
 import { convertHHMMSSStringToSeconds } from "../../utilities/Time";
 import { VideoProfile } from "./response";
+import { Config } from "../../configs";
 
 export default class DownloadService {
 	private ffmpeg: FFmpeg;
 	private twitchDl: TwitchDl;
 	private ytDlp: YtDlp;
+	private config: Config;
 
-	constructor(twitchDl: TwitchDl, ffmpeg: FFmpeg, ytDlp: YtDlp) {
+	constructor(twitchDl: TwitchDl, ffmpeg: FFmpeg, ytDlp: YtDlp, config: Config) {
 		this.ffmpeg = ffmpeg;
 		this.twitchDl = twitchDl;
 		this.ytDlp = ytDlp;
+		this.config = config;
 	}
 
 	async generateVideoProfile(
@@ -51,7 +55,7 @@ export default class DownloadService {
 		};
 	}
 
-	async downloadTwitchVideo(url: string, options?: DownloadVideoOptions) {
+	async downloadTwitchVideo(url: string, options?: DownloadVideoOptions): Promise<DownloadedVideo> {
 		const video = await this.twitchDl.downloadTwitchVideo(url, options);
 		const profile = await this.generateVideoProfile(
 			video.filename,
@@ -84,7 +88,7 @@ export default class DownloadService {
 		return result;
 	}
 
-	async downloadYoutubeVideo(url: string, options?: DownloadVideoOptions) {
+	async downloadYoutubeVideo(url: string, options?: DownloadVideoOptions): Promise<DownloadedVideo> {
 		const video = await this.ytDlp.downloadYoutubeVideo(url, options);
 		const profile = await this.generateVideoProfile(
 			video.filename,
@@ -115,5 +119,47 @@ export default class DownloadService {
 		});
 
 		return result;
+	}
+
+    async getLocalVideo(url: string): Promise<DownloadedVideo | null> {
+		if (url.startsWith("https://")) {
+			if (url.includes("youtube")) {
+				const prefixId = url.split("v=")[1];
+				return prisma.downloadedVideo.findFirst({
+					where: {
+						platform: "Youtube",
+						platformId: prefixId,
+					},
+				});
+			} else if (url.includes("twitch")) {
+				const data = await this.twitchDl.getTwitchVideoData(url);
+				return prisma.downloadedVideo.findFirst({
+					where: {
+						platform: "Twitch",
+						platformId: data.id,
+					},
+				});
+			}
+		} else {
+			let video = await prisma.downloadedVideo.findFirst({
+				where: {
+					filename: url,
+				},
+			});
+
+			if (!video) {
+				video = await prisma.downloadedVideo.findFirst({
+					where: {
+						filename: url.slice(
+							this.config.VideoStoragePath.length + 1
+						),
+					},
+				});
+			}
+
+			return video;
+		}
+
+		return null;
 	}
 }
