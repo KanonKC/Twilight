@@ -30,4 +30,27 @@ export default class Python {
 			);
 		});
 	}
+
+	async getAudioSpike(
+		filename: string,
+		options?: {
+			threshold?: number;
+		}
+	): Promise<number[]> {
+		const defaultThreshold = 0.6;
+		return new Promise((resolve, reject) => {
+			exec(
+				`python src/modules/audio-spike.py ${filename} ${
+					options?.threshold ?? defaultThreshold
+				}`,
+				(error, stdout, _) => {
+					if (error) {
+						reject(error);
+					}
+					const result = JSON.parse(stdout);
+					resolve(result);
+				}
+			);
+		});
+	}
 }

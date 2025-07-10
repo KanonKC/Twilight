@@ -3,10 +3,11 @@ import FFmpeg from "../../externals/ffmpeg/ffmpeg";
 import TwitchDl from "../../externals/twitch-dl/twitch-dl";
 import YtDlp from "../../externals/yt-dlp/yt-dlp";
 import { prisma } from "../../prisma";
-import { DownloadVideoOptions } from "../../types/DownloadVideo.type";
+import { DownloadVideoOptions, ExtendedDownloadedVideo } from "../../types/DownloadVideo.type";
 import { convertHHMMSSStringToSeconds } from "../../utilities/Time";
 import { VideoProfile } from "./response";
 import { Config } from "../../configs";
+import { getVaultVideo } from "../videos/get-vault-video";
 
 export default class DownloadService {
 	private ffmpeg: FFmpeg;
@@ -14,7 +15,12 @@ export default class DownloadService {
 	private ytDlp: YtDlp;
 	private config: Config;
 
-	constructor(twitchDl: TwitchDl, ffmpeg: FFmpeg, ytDlp: YtDlp, config: Config) {
+	constructor(
+		twitchDl: TwitchDl,
+		ffmpeg: FFmpeg,
+		ytDlp: YtDlp,
+		config: Config
+	) {
 		this.ffmpeg = ffmpeg;
 		this.twitchDl = twitchDl;
 		this.ytDlp = ytDlp;
@@ -55,7 +61,10 @@ export default class DownloadService {
 		};
 	}
 
-	async downloadTwitchVideo(url: string, options?: DownloadVideoOptions): Promise<DownloadedVideo> {
+	async downloadTwitchVideo(
+		url: string,
+		options?: DownloadVideoOptions
+	): Promise<DownloadedVideo> {
 		const video = await this.twitchDl.downloadTwitchVideo(url, options);
 		const profile = await this.generateVideoProfile(
 			video.filename,
@@ -88,7 +97,10 @@ export default class DownloadService {
 		return result;
 	}
 
-	async downloadYoutubeVideo(url: string, options?: DownloadVideoOptions): Promise<DownloadedVideo> {
+	async downloadYoutubeVideo(
+		url: string,
+		options?: DownloadVideoOptions
+	): Promise<DownloadedVideo> {
 		const video = await this.ytDlp.downloadYoutubeVideo(url, options);
 		const profile = await this.generateVideoProfile(
 			video.filename,
@@ -121,7 +133,7 @@ export default class DownloadService {
 		return result;
 	}
 
-    async getLocalVideo(url: string): Promise<DownloadedVideo | null> {
+	async getLocalVideo(url: string): Promise<DownloadedVideo | null> {
 		if (url.startsWith("https://")) {
 			if (url.includes("youtube")) {
 				const prefixId = url.split("v=")[1];
@@ -162,4 +174,33 @@ export default class DownloadService {
 
 		return null;
 	}
+
+	async downloadRange(
+		url: string,
+		options?: DownloadVideoOptions
+	): Promise<DownloadedVideo> {
+		let video: DownloadedVideo | null = null;
+
+		if (url.startsWith("https://")) {
+			if (url.includes("twitch")) {
+				video = await this.downloadTwitchVideo(url, options);
+			} else if (url.includes("youtube") || url.includes("youtu.be")) {
+				video = await this.downloadYoutubeVideo(url, options);
+			}
+		} else {
+			video = await this.getLocalVideo(url);
+		}
+
+		if (!video) {
+			throw new Error("Invalid URL");
+		}
+		return video;
+	}
+
+    extendDownloadedVideoData(downloadedVideo: DownloadedVideo): ExtendedDownloadedVideo {
+        return {
+            ...downloadedVideo,
+            durationMilliseconds: downloadedVideo.duration * 1000
+        }
+    }
 }

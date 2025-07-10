@@ -1,4 +1,4 @@
-interface DownloadTwitchVideo {
+export interface DownloadTwitchVideo {
     id: string;
     title?: string;
     filename: string;

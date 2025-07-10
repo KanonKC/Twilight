@@ -7,6 +7,7 @@ import {
 import { getYoutubeVideoKey } from "../../utilities/Url";
 import { generateRandomString } from "../../utilities/String";
 import { convertHHMMSSStringToSeconds } from "../../utilities/Time";
+import { DownloadYoutubeVideo } from "./response";
 
 export default class YtDlp {
 	constructor() {}

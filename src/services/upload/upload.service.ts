@@ -8,7 +8,7 @@ export default class UploadService {
 		this.python = python;
 	}
 
-	async youtubeUpload(
+	async uploadYoutubeVideo(
 		filePath: string,
 		{
 			title,

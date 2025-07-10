@@ -2,6 +2,7 @@ import { exec } from "child_process";
 import { generateRandomString } from "../../utilities/String";
 import { convertHHMMSSStringToSeconds } from "../../utilities/Time";
 import { DownloadVideoOptions, TwitchVideo } from "../../types/DownloadVideo.type";
+import { DownloadTwitchVideo } from "./response";
 
 export default class TwitchDl {
 

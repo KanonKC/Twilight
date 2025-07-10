@@ -13,49 +13,6 @@ export default class FFmpeg {
 		this.config = config;
 	}
 
-	// TODO: Move to other file
-	// async getLocalVideo(url: string): Promise<DownloadedVideo | null> {
-	// 	if (url.startsWith("https://")) {
-	// 		if (url.includes("youtube")) {
-	// 			const prefixId = url.split("v=")[1];
-	// 			return prisma.downloadedVideo.findFirst({
-	// 				where: {
-	// 					platform: "Youtube",
-	// 					platformId: prefixId,
-	// 				},
-	// 			});
-	// 		} else if (url.includes("twitch")) {
-	// 			const data = await getTwitchVideoData(url);
-	// 			return prisma.downloadedVideo.findFirst({
-	// 				where: {
-	// 					platform: "Twitch",
-	// 					platformId: data.id,
-	// 				},
-	// 			});
-	// 		}
-	// 	} else {
-	// 		let video = await prisma.downloadedVideo.findFirst({
-	// 			where: {
-	// 				filename: url,
-	// 			},
-	// 		});
-
-	// 		if (!video) {
-	// 			video = await prisma.downloadedVideo.findFirst({
-	// 				where: {
-	// 					filename: url.slice(
-	// 						this.config.VideoStoragePath.length + 1
-	// 					),
-	// 				},
-	// 			});
-	// 		}
-
-	// 		return video;
-	// 	}
-
-	// 	return null;
-	// }
-
 	async getVideoDuration(filename: string): Promise<number> {
 		return new Promise((resolve, reject) => {
 			exec(
