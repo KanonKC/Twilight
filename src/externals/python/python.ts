@@ -4,6 +4,21 @@ import { YoutubeUploadVideoDetail } from "../../types/Youtube.type";
 export default class Python {
 	constructor() {}
 
+	async initYoutubeAuth() {
+		return new Promise((resolve, reject) => {
+			exec(
+				`python src/libs/youtube-auth.py`,
+				async (error) => {
+					if (error) {
+						reject({ success: false, error });
+					} else {
+						resolve({ success: true });
+					}
+				}
+			);
+		});
+	}
+
 	async youtubeUpload(
 		filePath: string,
 		{

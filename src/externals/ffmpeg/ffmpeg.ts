@@ -1,9 +1,8 @@
+import { DownloadedVideo } from "@prisma/client";
 import { exec } from "child_process";
-import { ConcatenatedVideo, DownloadedVideo } from "@prisma/client";
-import { getTwitchVideoData } from "../../services/downloads/platforms/get-twitch-video-data";
 import { Config } from "../../configs";
-import { generateRandomString } from "../../utilities/String";
 import { VideoTrimResult } from "../../types/DownloadVideo.type";
+import { generateRandomString } from "../../utilities/String";
 import { convertHHMMSSStringToSeconds, convertSecondsToHHMMSSString } from "../../utilities/Time";
 
 export default class FFmpeg {
@@ -14,7 +13,7 @@ export default class FFmpeg {
 	}
 
 	async getVideoDuration(filename: string): Promise<number> {
-		return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
 			exec(
 				`ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 ${this.config.VideoStoragePath}/${filename}`,
 				async (error, stdout, stderr) => {
@@ -104,25 +103,13 @@ export default class FFmpeg {
 			.map((filename) => `${this.config.VideoStoragePath}/${filename}`)
 			.join(" ");
 
+        const command = `sh src/libs/concat-video.sh ${this.config.VideoStoragePath}/${outputFilename} ${inputFiles}`
 
-		return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
 			exec(
-				`sh src/modules/video-concat.sh ${this.config.VideoStoragePath}/${outputFilename} ${inputFiles}`,
+				command,
 				async (error, _, stderr) => {
-					if (error) {
-						reject(error);
-						return;
-					}
-					if (stderr) {
-						reject(stderr);
-						return;
-					}
-
-					try {
-						resolve(outputFilename);
-					} catch (error) {
-						reject(error);
-					}
+					resolve(outputFilename)
 				}
 			);
 		});

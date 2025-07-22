@@ -72,7 +72,7 @@ def get_authenticated_service(args):
                                    scope=YOUTUBE_UPLOAD_SCOPE,
                                    message=MISSING_CLIENT_SECRETS_MESSAGE)
 
-    storage = Storage("%s-oauth2.json" % sys.argv[0])
+    storage = Storage("youtube-oauth2.json")
     credentials = storage.get()
 
     if credentials is None or credentials.invalid:
@@ -183,5 +183,5 @@ if __name__ == '__main__':
         print("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))
 
 '''
-python src/modules/youtube-upload.py --file="dumps/youtube_KNqZv5q7Rj4_range_1_04_04-1_04_34_E6gT.mp4" --title="Test" --description="Description goes here..." --keywords="1,2,3" --category="22" --privacyStatus="private"
+python src/libs/youtube-upload.py --file="dumps/concat_6FuNSJV1.mp4" --title="Test" --description="Description goes here..." --keywords="1,2,3" --category="22" --privacyStatus="private"
 '''

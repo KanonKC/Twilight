@@ -1,5 +1,5 @@
 import { ConcatenatedVideo, DownloadedVideo } from "@prisma/client";
-import config from "../configs";
+import { Config } from "../configs";
 import FFmpeg from "../externals/ffmpeg/ffmpeg";
 import Python from "../externals/python/python";
 import TwitchDl from "../externals/twitch-dl/twitch-dl";
@@ -7,44 +7,8 @@ import YtDlp from "../externals/yt-dlp/yt-dlp";
 import ConcatenatedService from "../services/concatenated/concatenated.service";
 import DownloadService from "../services/download/download.service";
 import UploadService from "../services/upload/upload.service";
-import { videoTrim } from "../services/videos/video-trim";
 import { YoutubeUploadVideoDetail } from "../types/Youtube.type";
 import { convertSecondsToHHMMSSString } from "../utilities/Time";
-
-const payload: DownloadAndUploadVideoRequest = {
-	sources: [
-		{
-            url: "https://www.youtube.com/live/vX2t5c8LVUA",
-            // autoHighlights: true,
-            highlights: [
-                {
-                    start: "01:21:20",
-                    end: "01:21:30",
-                }, 
-                // {
-                //     start: "00:18:03",
-                //     end: "00:18:15",
-                // }, 
-                // {
-                //     start: "02:46:02",
-                //     end: "02:46:08",
-                // }, 
-                // {
-                //     start: "02:46:02",
-                //     end: "02:46:08",
-                // }, 
-            ],
-        },
-	],
-	// concat: true,
-	// youtube: {
-	//     title: "Visage Moment",
-	//     description: "Very new upload",
-	//     privacyStatus: "private",
-	// }
-};
-
-downloadAndUploadVideo(payload).then(console.log);
 
 interface SourceVideoHighlight {
 	url: string;
@@ -59,7 +23,7 @@ interface Highlight {
 	end: string;
 }
 
-interface DownloadAndUploadVideoRequest {
+export interface DownloadAndUploadVideoRequest {
 	sources: {
 		url: string;
 		resolution?: { width: number; height: number };
@@ -84,151 +48,184 @@ interface DownloadAndUploadVideoResponse {
 	youtubeVideoId: string | null;
 }
 
-async function downloadAndUploadVideo(
-	payload: DownloadAndUploadVideoRequest
-): Promise<DownloadAndUploadVideoResponse> {
-	const twitchDl = new TwitchDl();
-	const ffmpeg = new FFmpeg(config);
-	const ytDlp = new YtDlp();
-	const python = new Python();
-	const ds = new DownloadService(twitchDl, ffmpeg, ytDlp, config);
-	const cs = new ConcatenatedService(config);
-	const us = new UploadService(python);
-	const response: DownloadAndUploadVideoResponse = {
-		sources: [],
-		concatVideo: null,
-		youtubeVideoId: null,
-	};
 
-	const highlightFilenames: string[] = [];
-	let totalHighlights = 0;
+export default class DownloadAndUploadVideoScript {
+	private twitchDl: TwitchDl;
+	private ffmpeg: FFmpeg;
+	private ytDlp: YtDlp;
+	private python: Python;
+	private ds: DownloadService;
+	private cs: ConcatenatedService;
+	private us: UploadService;
 
-	for (const source of payload.sources) {
-		console.log(`[Twilight] Start downloading ${source.url} ...`);
-		const sourceResponse: {
-			url: string;
-			highlights: DownloadedVideoHighlight[];
-		} = {
-			url: source.url,
-			highlights: [],
+	constructor(config: Config) {
+		this.twitchDl = new TwitchDl();
+		this.ffmpeg = new FFmpeg(config);
+		this.ytDlp = new YtDlp();
+		this.python = new Python();
+		this.ds = new DownloadService(
+			this.twitchDl,
+			this.ffmpeg,
+			this.ytDlp,
+			config
+		);
+		this.cs = new ConcatenatedService(config);
+		this.us = new UploadService(this.python);
+	}
+
+	async do(
+		payload: DownloadAndUploadVideoRequest
+	): Promise<DownloadAndUploadVideoResponse> {
+
+        if (payload.youtube) {
+            this.python.initYoutubeAuth()
+        }
+
+		const response: DownloadAndUploadVideoResponse = {
+			sources: [],
+			concatVideo: null,
+			youtubeVideoId: null,
 		};
 
-		let video: DownloadedVideo | null = null;
+		const highlightFilenames: string[] = [];
+		let totalHighlights = 0;
 
-		if (source.autoHighlights) {
-			console.log(
-				`[Twilight] Auto-highlight is enabled, begin download a whole video ...`
-			);
-			video = await ds.downloadRange(source.url, {
-				resolution: source.resolution,
-			});
-			console.log(
-				`[Twilight] Download video success! (${video.filename})`
-			);
+		for (const source of payload.sources) {
+			console.log(`[Twilight] Start downloading ${source.url} ...`);
+			const sourceResponse: {
+				url: string;
+				highlights: DownloadedVideoHighlight[];
+			} = {
+				url: source.url,
+				highlights: [],
+			};
 
-			console.log(`[Twilight] Detecting audio spikes ...`);
-			const audioSpike = await python.getAudioSpike(
-				`${process.env.VIDEO_STORAGE_PATH}/${video.filename}`,
-				{ threshold: source.autoHighlightsThreshold ?? 0.6 }
-			);
-			console.log(
-				`[Twilight] Found total ${audioSpike.length} Audio spikes.`
-			);
+			let video: DownloadedVideo | null = null;
 
-			for (let i = 0; i < audioSpike.length; i++) {
+			if (source.autoHighlights) {
 				console.log(
-					`[Twilight] Download slice of video (${i + 1}/${
-						audioSpike.length
-					}) ...`
+					`[Twilight] Auto-highlight is enabled, begin download a whole video ...`
 				);
-				let startTime = audioSpike[i] - 30;
-				if (startTime < 0) {
-					startTime = 0;
-				}
-				let endTime = audioSpike[i] + 30;
-				if (endTime > video.duration) {
-					endTime = video.duration;
-				}
-				const trimmedVideo = await videoTrim(video, startTime, endTime);
-				sourceResponse.highlights.push({
-					start: convertSecondsToHHMMSSString(startTime),
-					end: convertSecondsToHHMMSSString(endTime),
-					downloadVideo: trimmedVideo.editedVideo,
-				});
-				highlightFilenames.push(trimmedVideo.editedVideo.filename);
-				response.sources.push(
-					ds.extendDownloadedVideoData(trimmedVideo.editedVideo)
-				);
-			}
-
-			totalHighlights += audioSpike.length;
-		}
-
-		if (source.highlights && source.highlights.length > 0) {
-			let count = 1;
-			for (const highlight of source.highlights) {
-				console.log(
-					`[Twilight] Download slice of video (${count}/${source.highlights.length}) ...`
-				);
-				const downloadedHighlight = await ds.downloadRange(source.url, {
-					range: {
-						start: highlight.start,
-						end: highlight.end,
-					},
+				video = await this.ds.downloadRange(source.url, {
 					resolution: source.resolution,
 				});
-				sourceResponse.highlights.push({
-					start: highlight.start,
-					end: highlight.end,
-					downloadVideo: downloadedHighlight,
-				});
-				highlightFilenames.push(downloadedHighlight.filename);
-				response.sources.push(
-					ds.extendDownloadedVideoData(downloadedHighlight)
+				console.log(
+					`[Twilight] Download video success! (${video.filename})`
 				);
-				count++;
+
+				console.log(`[Twilight] Detecting audio spikes ...`);
+				const audioSpike = await this.python.getAudioSpike(
+					`${process.env.VIDEO_STORAGE_PATH}/${video.filename}`,
+					{ threshold: source.autoHighlightsThreshold ?? 0.6 }
+				);
+				console.log(
+					`[Twilight] Found total ${audioSpike.length} Audio spikes.`
+				);
+
+				for (let i = 0; i < audioSpike.length; i++) {
+					console.log(
+						`[Twilight] Download slice of video (${i + 1}/${
+							audioSpike.length
+						}) ...`
+					);
+					let startTime = audioSpike[i] - 30;
+					if (startTime < 0) {
+						startTime = 0;
+					}
+					let endTime = audioSpike[i] + 30;
+					if (endTime > video.duration) {
+						endTime = video.duration;
+					}
+					const trimmedVideo = await this.ffmpeg.trimVideo(
+						video,
+						startTime,
+						endTime
+					);
+					sourceResponse.highlights.push({
+						start: convertSecondsToHHMMSSString(startTime),
+						end: convertSecondsToHHMMSSString(endTime),
+						downloadVideo: trimmedVideo.editedVideo,
+					});
+					highlightFilenames.push(trimmedVideo.editedVideo.filename);
+					response.sources.push(
+						this.ds.extendDownloadedVideoData(
+							trimmedVideo.editedVideo
+						)
+					);
+				}
+
+				totalHighlights += audioSpike.length;
 			}
 
-			totalHighlights += source.highlights.length;
-		}
+			if (source.highlights && source.highlights.length > 0) {
+				let count = 1;
+				for (const highlight of source.highlights) {
+					console.log(
+						`[Twilight] Download slice of video (${count}/${source.highlights.length}) ...`
+					);
+					const downloadedHighlight = await this.ds.downloadRange(
+						source.url,
+						{
+							range: {
+								start: highlight.start,
+								end: highlight.end,
+							},
+							resolution: source.resolution,
+						}
+					);
+					sourceResponse.highlights.push({
+						start: highlight.start,
+						end: highlight.end,
+						downloadVideo: downloadedHighlight,
+					});
+					highlightFilenames.push(downloadedHighlight.filename);
+					response.sources.push(
+						this.ds.extendDownloadedVideoData(downloadedHighlight)
+					);
+					count++;
+				}
 
-		if (
-			!(source.highlights && source.highlights.length > 0) &&
-			!source.autoHighlights
-		) {
-			const video = await ds.downloadRange(source.url, {
-				resolution: source.resolution,
-			});
-			highlightFilenames.push(video.filename);
-			response.sources.push(ds.extendDownloadedVideoData(video));
-		}
-		console.log(
-			`[Twilight] ${totalHighlights} highlights successfully downloaded!`
-		);
-	}
+				totalHighlights += source.highlights.length;
+			}
 
-	if (payload.concat || payload.youtube) {
-		console.log(
-			`[Twilight] Concatenating ${highlightFilenames.length} highlights into one video ...`
-		);
-		const concatVideo = await cs.concatVideos(
-			highlightFilenames,
-			undefined
-		);
-		console.log(
-			`[Twilight] Successfully create video (${concatVideo.filename})`
-		);
-		response.concatVideo = concatVideo;
-
-		if (payload.youtube) {
-			console.log(`[Twilight] Upload video to YouTube ...`);
-			const youtubeUploadResponse = await us.uploadYoutubeVideo(
-				`${process.env.VIDEO_STORAGE_PATH}/${concatVideo.filename}`,
-				payload.youtube
+			if (
+				!(source.highlights && source.highlights.length > 0) &&
+				!source.autoHighlights
+			) {
+				const video = await this.ds.downloadRange(source.url, {
+					resolution: source.resolution,
+				});
+				highlightFilenames.push(video.filename);
+				response.sources.push(this.ds.extendDownloadedVideoData(video));
+			}
+			console.log(
+				`[Twilight] ${totalHighlights} highlights successfully downloaded!`
 			);
-			response.youtubeVideoId = youtubeUploadResponse.videoId;
 		}
-	}
 
-	return response;
+		if (payload.concat || payload.youtube) {
+			console.log(
+				`[Twilight] Concatenating ${highlightFilenames.length} highlights into one video ...`
+			);
+			const concatVideo = await this.cs.concatVideos(
+				highlightFilenames,
+				undefined
+			);
+			console.log(
+				`[Twilight] Successfully create video (${concatVideo.filename})`
+			);
+			response.concatVideo = concatVideo;
+
+			if (payload.youtube) {
+				console.log(`[Twilight] Upload video to YouTube ...`);
+				const youtubeUploadResponse = await this.us.uploadYoutubeVideo(
+					`${process.env.VIDEO_STORAGE_PATH}/${concatVideo.filename}`,
+					payload.youtube
+				);
+				response.youtubeVideoId = youtubeUploadResponse.videoId;
+			}
+		}
+
+		return response;
+	}
 }
