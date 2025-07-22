@@ -26,6 +26,7 @@ export default class DownloadService {
 		this.config = config;
 	}
 
+    // T1
 	async generateVideoProfile(
 		filename: string,
 		options?: DownloadVideoOptions
@@ -60,6 +61,7 @@ export default class DownloadService {
 		};
 	}
 
+    // T2
 	async downloadTwitchVideo(
 		url: string,
 		options?: DownloadVideoOptions
@@ -96,6 +98,7 @@ export default class DownloadService {
 		return result;
 	}
 
+    // T2
 	async downloadYoutubeVideo(
 		url: string,
 		options?: DownloadVideoOptions
@@ -132,6 +135,7 @@ export default class DownloadService {
 		return result;
 	}
 
+    // T1
 	async getLocalVideo(url: string): Promise<DownloadedVideo | null> {
 		if (url.startsWith("https://")) {
 			if (url.includes("youtube")) {
@@ -174,6 +178,7 @@ export default class DownloadService {
 		return null;
 	}
 
+    // T3
 	async downloadRange(
 		url: string,
 		options?: DownloadVideoOptions
@@ -196,6 +201,7 @@ export default class DownloadService {
 		return video;
 	}
 
+    // T1
     extendDownloadedVideoData(downloadedVideo: DownloadedVideo): ExtendedDownloadedVideo {
         return {
             ...downloadedVideo,
