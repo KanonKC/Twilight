@@ -1,8 +1,12 @@
+import { configDotenv } from "dotenv";
+
 export interface Config {
     VideoStoragePath: string;
     Port: number;
     TwitchClientId: string;
 }
+
+configDotenv();
 
 const config: Config = {
     VideoStoragePath: process.env.VIDEO_STORAGE_PATH || "",

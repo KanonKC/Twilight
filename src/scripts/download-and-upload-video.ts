@@ -76,6 +76,11 @@ export default class DownloadAndUploadVideoScript {
 	async do(
 		payload: DownloadAndUploadVideoRequest
 	): Promise<DownloadAndUploadVideoResponse> {
+
+        if (payload.youtube) {
+            this.python.initYoutubeAuth()
+        }
+
 		const response: DownloadAndUploadVideoResponse = {
 			sources: [],
 			concatVideo: null,
