@@ -13,7 +13,7 @@ export default class FFmpeg {
 	}
 
 	async getVideoDuration(filename: string): Promise<number> {
-		return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
 			exec(
 				`ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 ${this.config.VideoStoragePath}/${filename}`,
 				async (error, stdout, stderr) => {
@@ -103,25 +103,13 @@ export default class FFmpeg {
 			.map((filename) => `${this.config.VideoStoragePath}/${filename}`)
 			.join(" ");
 
+        const command = `sh src/libs/concat-video.sh ${this.config.VideoStoragePath}/${outputFilename} ${inputFiles}`
 
-		return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
 			exec(
-				`sh src/modules/video-concat.sh ${this.config.VideoStoragePath}/${outputFilename} ${inputFiles}`,
+				command,
 				async (error, _, stderr) => {
-					if (error) {
-						reject(error);
-						return;
-					}
-					if (stderr) {
-						reject(stderr);
-						return;
-					}
-
-					try {
-						resolve(outputFilename);
-					} catch (error) {
-						reject(error);
-					}
+					resolve(outputFilename)
 				}
 			);
 		});
