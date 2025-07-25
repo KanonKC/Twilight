@@ -1,4 +1,4 @@
-export function getYoutubeVideoKey(url:string):string {
+export function getYoutubeVideoKey(url: string): string {
 
     /* 
     Possible Youtube URL formats:
@@ -20,8 +20,4 @@ export function getYoutubeVideoKey(url:string):string {
     else {
         return url
     }
-}
-
-export function getTwitchVideoKey(url:string):string {
-    return url.split("/").pop() as string;
 }
