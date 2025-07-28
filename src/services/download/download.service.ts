@@ -7,6 +7,7 @@ import { DownloadVideoOptions, ExtendedDownloadedVideo } from "../../types/Downl
 import { convertHHMMSSStringToSeconds } from "../../utilities/Time";
 import { VideoProfile } from "./response";
 import { Config } from "../../configs";
+import { existsSync } from "fs";
 
 export default class DownloadService {
 	private ffmpeg: FFmpeg;
@@ -196,8 +197,11 @@ export default class DownloadService {
 		}
 
 		if (!video) {
-			throw new Error("Invalid URL");
+			video = await this.importLocalVideo(url)
 		}
+        if (!video) {
+            throw new Error("Video not found")
+        }
 		return video;
 	}
 
@@ -207,5 +211,24 @@ export default class DownloadService {
             ...downloadedVideo,
             durationMilliseconds: downloadedVideo.duration * 1000
         }
+    }
+
+    async importLocalVideo(filename: string): Promise<DownloadedVideo | null> {
+        if (!existsSync(process.env.VIDEO_STORAGE_PATH + "/" + filename)) {
+            return null
+        }
+        const profile = await this.generateVideoProfile(filename)
+        return prisma.downloadedVideo.create({
+            data: {
+                title: profile.filename,
+                filename: profile.filename,
+                url: filename,
+                platform: "Local",
+                platformId: filename,
+                width: profile.width,
+                height: profile.height,
+                duration: profile.duration,
+            }
+        })
     }
 }
