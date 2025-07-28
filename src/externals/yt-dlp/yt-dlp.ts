@@ -82,6 +82,8 @@ export default class YtDlp {
 			command = `${command} -4`;
 		}
 
+		console.log("[Yt-Dlp] Downloading Youtube Video with command: ", command)
+
 		return new Promise((resolve, reject) => {
 			exec(command, async (error) => {
 				if (error) {
