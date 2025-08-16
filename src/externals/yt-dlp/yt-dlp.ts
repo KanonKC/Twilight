@@ -55,11 +55,13 @@ export default class YtDlp {
 				height = options.resolution.height;
 			}
 		}
-
+        const path = options?.path || process.env.VIDEO_STORAGE_PATH || './';
 		const videoInfo = await this.getYoutubeVideoData(url);
-		// const baseCommand = `yt-dlp --paths "./${process.env.VIDEO_STORAGE_PATH}" -f "bestvideo+bestaudio[ext=mp4]/best" --merge-output-format mp4`
-		// const baseCommand = `yt-dlp --cookies-from-browser firefox --paths "./${process.env.VIDEO_STORAGE_PATH}" -f "bestvideo+bestaudio[ext=mp4]/best" --merge-output-format mp4`
-		const baseCommand = `yt-dlp --cookies-from-browser firefox --paths "./${process.env.VIDEO_STORAGE_PATH}" --merge-output-format mp4`;
+		// const baseCommand = `yt-dlp --paths "./${path}" -f "bestvideo+bestaudio[ext=mp4]/best" --merge-output-format mp4`
+		// const baseCommand = `yt-dlp --cookies-from-browser firefox --paths "./${path}" -f "bestvideo+bestaudio[ext=mp4]/best" --merge-output-format mp4`
+        // Claude-4: const baseCommand = `yt-dlp --cookies-from-browser firefox --paths "./${path}" -f "bestvideo[height=1080][fps=60]+bestaudio[ext=mp4]/bestvideo[height=1080]+bestaudio[ext=mp4]/best" --merge-output-format mp4`
+		
+        const baseCommand = `yt-dlp --cookies-from-browser firefox --paths "./${path}" --merge-output-format mp4`;
 
 		if (start && end) {
 			const startText = start.split(":").join("_");
@@ -81,6 +83,8 @@ export default class YtDlp {
 			// TODO: Handle IPv4 options flag
 			command = `${command} -4`;
 		}
+
+		console.log("[Yt-Dlp] Downloading Youtube Video with command: ", command)
 
 		return new Promise((resolve, reject) => {
 			exec(command, async (error) => {

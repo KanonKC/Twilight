@@ -6,34 +6,19 @@ import DownloadAndUploadVideoScript, {
 const payload: DownloadAndUploadVideoRequest = {
 	sources: [
 		{
-			url: "https://www.youtube.com/live/vX2t5c8LVUA",
-			// autoHighlights: true,
-			highlights: [
-				{
-					start: "01:21:20",
-					end: "01:21:30",
-				},
-				// {
-				//     start: "00:18:03",
-				//     end: "00:18:15",
-				// },
-				// {
-				//     start: "02:46:02",
-				//     end: "02:46:08",
-				// },
-				// {
-				//     start: "02:46:02",
-				//     end: "02:46:08",
-				// },
-			],
+			url: "https://www.youtube.com/live/c-ACj2UYIbI",
+            highlights: [
+                {
+                    start: "6:48",
+                    end: "7:39"
+                }
+            ]
 		},
 	],
-	// concat: true,
-	// youtube: {
-	//     title: "Visage Moment",
-	//     description: "Very new upload",
-	//     privacyStatus: "private",
-	// }
+	youtube: {
+		title: "ถ้าจะตายเก็บ Rune ให้ด้วย",
+		privacyStatus: "unlisted"
+	}
 };
 const duv = new DownloadAndUploadVideoScript(config);
 duv.do(payload).then(console.log);

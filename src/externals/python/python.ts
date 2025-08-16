@@ -6,16 +6,13 @@ export default class Python {
 
 	async initYoutubeAuth() {
 		return new Promise((resolve, reject) => {
-			exec(
-				`python src/libs/youtube-auth.py`,
-				async (error) => {
-					if (error) {
-						reject({ success: false, error });
-					} else {
-						resolve({ success: true });
-					}
+			exec(`python src/libs/youtube-auth.py`, async (error) => {
+				if (error) {
+					reject({ success: false, error });
+				} else {
+					resolve({ success: true });
 				}
-			);
+			});
 		});
 	}
 
@@ -53,19 +50,17 @@ export default class Python {
 		}
 	): Promise<number[]> {
 		const defaultThreshold = 0.6;
+		const command = `python src/libs/audio-spike.py ${filename} ${
+			options?.threshold ?? defaultThreshold
+		}`;
 		return new Promise((resolve, reject) => {
-			exec(
-				`python src/modules/audio-spike.py ${filename} ${
-					options?.threshold ?? defaultThreshold
-				}`,
-				(error, stdout, _) => {
-					if (error) {
-						reject(error);
-					}
-					const result = JSON.parse(stdout);
-					resolve(result);
+			exec(command, (error, stdout, _) => {
+				if (error) {
+					reject(error);
 				}
-			);
+				const result = JSON.parse(stdout);
+				resolve(result);
+			});
 		});
 	}
 }

@@ -56,25 +56,14 @@ export default class TwitchDl {
 			filename = `${videoId}.mp4`;
 			command = `twitch-dl download ${url} -q source --overwrite -o ${process.env.VIDEO_STORAGE_PATH}/${filename}`;
 		}
-
+        console.log("[Twitch-Dl] Downloading Twitch Video with command: ", command)
 		return new Promise((resolve, reject) => {
-			exec(command, async (error, _, stderr) => {
-				if (error) {
-					reject(error);
-				}
-				if (stderr) {
-					reject(stderr);
-				}
-
-				try {
-					resolve({
-						id: videoInfo.id,
-						title: videoInfo.title,
-						filename: filename,
-					});
-				} catch (error) {
-					reject(error);
-				}
+			exec(command, async () => {
+				resolve({
+                    id: videoInfo.id,
+                    title: videoInfo.title,
+                    filename: filename,
+                });
 			});
 		});
 	}

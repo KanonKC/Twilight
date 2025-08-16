@@ -7,6 +7,7 @@ import { DownloadVideoOptions, ExtendedDownloadedVideo } from "../../types/Downl
 import { convertHHMMSSStringToSeconds } from "../../utilities/Time";
 import { VideoProfile } from "./response";
 import { Config } from "../../configs";
+import { existsSync } from "fs";
 
 export default class DownloadService {
 	private ffmpeg: FFmpeg;
@@ -67,10 +68,12 @@ export default class DownloadService {
 		options?: DownloadVideoOptions
 	): Promise<DownloadedVideo> {
 		const video = await this.twitchDl.downloadTwitchVideo(url, options);
+        console.log("[Download-Service] Twitch Video downloaded. Generating profile ...")
 		const profile = await this.generateVideoProfile(
 			video.filename,
 			options
 		);
+        console.log("[Download-Service] Profile generated. Creating database entry ...")
 
 		const result = await prisma.downloadedVideo.create({
 			data: {
@@ -104,10 +107,12 @@ export default class DownloadService {
 		options?: DownloadVideoOptions
 	): Promise<DownloadedVideo> {
 		const video = await this.ytDlp.downloadYoutubeVideo(url, options);
+        console.log("[Download-Service] Youtube Video downloaded. Generating profile ...")
 		const profile = await this.generateVideoProfile(
 			video.filename,
 			options
 		);
+        console.log("[Download-Service] Profile generated. Creating database entry ...")
 
 		const result = await prisma.downloadedVideo.create({
 			data: {
@@ -187,17 +192,25 @@ export default class DownloadService {
 
 		if (url.startsWith("https://")) {
 			if (url.includes("twitch")) {
+                console.log("[Download-Service] Downloading Twitch Video")
 				video = await this.downloadTwitchVideo(url, options);
 			} else if (url.includes("youtube") || url.includes("youtu.be")) {
+                console.log("[Download-Service] Downloading Youtube Video")
 				video = await this.downloadYoutubeVideo(url, options);
 			}
 		} else {
+            console.log("[Download-Service] Try to get local video")
 			video = await this.getLocalVideo(url);
 		}
 
 		if (!video) {
-			throw new Error("Invalid URL");
+            console.log("[Download-Service] Video not found in database, try to import local video")
+			video = await this.importLocalVideo(url)
 		}
+        if (!video) {
+            throw new Error("Video not found")
+        }
+        console.log("[Download-Service] Download / Get video success.")
 		return video;
 	}
 
@@ -207,5 +220,26 @@ export default class DownloadService {
             ...downloadedVideo,
             durationMilliseconds: downloadedVideo.duration * 1000
         }
+    }
+
+    async importLocalVideo(filename: string): Promise<DownloadedVideo | null> {
+        if (!existsSync(process.env.VIDEO_STORAGE_PATH + "/" + filename)) {
+            return null
+        }
+        console.log("[Download-Service] Video found in local storage. Generating profile ...")
+        const profile = await this.generateVideoProfile(filename)
+        console.log("[Download-Service] Profile generated. Creating database entry ...")
+        return prisma.downloadedVideo.create({
+            data: {
+                title: profile.filename,
+                filename: profile.filename,
+                url: filename,
+                platform: "Local",
+                platformId: filename,
+                width: profile.width,
+                height: profile.height,
+                duration: profile.duration,
+            }
+        })
     }
 }
