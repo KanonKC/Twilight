@@ -7,6 +7,12 @@
 //     })
 // })
 
+import config from "../../configs";
+import FFmpeg from "../../externals/ffmpeg/ffmpeg";
+import TwitchDl from "../../externals/twitch-dl/twitch-dl";
+import YtDlp from "../../externals/yt-dlp/yt-dlp";
+import DownloadService from "../../services/download/download.service";
+
 // twitchDownload("https://www.twitch.tv/videos/1214826771").then((video) => {
 //     videoTrim(video,6,8).then((result) => {
 //         console.log("-------------------------")
@@ -29,3 +35,14 @@
 //         expect(trimmedVideo).haveOwnProperty("title")
 //     })
 // })
+
+const twitchDl = new TwitchDl()
+const ffmpeg = new FFmpeg(config)
+const ytdlp = new YtDlp()
+
+const ds = new DownloadService(twitchDl,ffmpeg,ytdlp,config)
+
+ds.downloadRange("https://www.twitch.tv/videos/2523791153").then((video) => {
+    console.log(video)
+})
+

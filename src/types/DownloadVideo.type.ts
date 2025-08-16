@@ -14,6 +14,7 @@ export interface DownloadVideoOptions {
         height: number;
     },
     ipv4?: boolean;
+    path?: string;
 }
 
 export interface YoutubeVideo {
