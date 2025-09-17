@@ -28,8 +28,11 @@ export interface DownloadAndUploadVideoRequest {
 		url: string;
 		resolution?: { width: number; height: number };
 		highlights?: Highlight[];
-		autoHighlights?: boolean;
-		autoHighlightsThreshold?: number;
+		autoHighlights?: {
+            start: string;
+            end: string;
+            threshold?: number;
+        };
 		forceDownload?: boolean;
 	}[];
 	concat?: boolean;
@@ -47,7 +50,6 @@ interface DownloadAndUploadVideoResponse {
 	concatVideo: ConcatenatedVideo | null;
 	youtubeVideoId: string | null;
 }
-
 
 export default class DownloadAndUploadVideoScript {
 	private twitchDl: TwitchDl;
@@ -76,10 +78,9 @@ export default class DownloadAndUploadVideoScript {
 	async do(
 		payload: DownloadAndUploadVideoRequest
 	): Promise<DownloadAndUploadVideoResponse> {
-
-        if (payload.youtube) {
-            this.python.initYoutubeAuth()
-        }
+		if (payload.youtube) {
+			this.python.initYoutubeAuth();
+		}
 
 		const response: DownloadAndUploadVideoResponse = {
 			sources: [],
@@ -104,22 +105,26 @@ export default class DownloadAndUploadVideoScript {
 
 			if (source.autoHighlights) {
 				console.log(
-					`[Twilight] Auto-highlight is enabled, begin download a whole video ...`
+					`[Twilight] Auto-highlight is enabled, begin download a video ...`
 				);
 				video = await this.ds.downloadRange(source.url, {
+                    range: {
+                        start: source.autoHighlights.start,
+                        end: source.autoHighlights.end,
+                    },
 					resolution: source.resolution,
 				});
 				console.log(
 					`[Twilight] Download video success! (${video.filename})`
 				);
 
-				console.log(`[Twilight] Detecting audio spikes ...`);
+				console.log(`[Twilight] Generating audio profile ...`);
 				const audioSpike = await this.python.getAudioSpike(
 					`${process.env.VIDEO_STORAGE_PATH}/${video.filename}`,
-					{ threshold: source.autoHighlightsThreshold ?? 0.6 }
+					{ threshold: source.autoHighlights?.threshold ?? 0.6 }
 				);
 				console.log(
-					`[Twilight] Found total ${audioSpike.length} Audio spikes.`
+					`[Twilight] Found total ${audioSpike.length} audio spikes.`
 				);
 
 				for (let i = 0; i < audioSpike.length; i++) {
@@ -216,13 +221,36 @@ export default class DownloadAndUploadVideoScript {
 			);
 			response.concatVideo = concatVideo;
 
+			const referenceDescription = `Reference: ${response.sources
+				.map(
+					(source) =>
+						`https://www.youtube.com/watch?v=${source.platformId}&t=${source.startTime}s`
+				)
+				.join("\n")}`;
+
 			if (payload.youtube) {
 				console.log(`[Twilight] Upload video to YouTube ...`);
 				const youtubeUploadResponse = await this.us.uploadYoutubeVideo(
 					`${process.env.VIDEO_STORAGE_PATH}/${concatVideo.filename}`,
-					payload.youtube
+					{
+						...payload.youtube,
+						description:
+							(payload.youtube.description || "") +
+							"\n" +
+							referenceDescription,
+					}
 				);
 				response.youtubeVideoId = youtubeUploadResponse.videoId;
+                const webhookUrl = "https://discord.com/api/webhooks/1408156500525842452/6-KBd8sH1s7lTHfJxb1pvXzqAbbaLBAUbfGzx7LWmkK4iG3HzfsvIl7XIfg2izZu4XL8"
+                fetch(webhookUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        content: `New Video Uploaded! https://www.youtube.com/watch?v=${youtubeUploadResponse.videoId}`
+                    })
+                })
 			}
 		}
 
