@@ -1,14 +1,14 @@
 import { ConcatenatedVideo, DownloadedVideo } from "@prisma/client";
-import { Config } from "../configs";
-import FFmpeg from "../externals/ffmpeg/ffmpeg";
-import Python from "../externals/python/python";
-import TwitchDl from "../externals/twitch-dl/twitch-dl";
-import YtDlp from "../externals/yt-dlp/yt-dlp";
-import ConcatenatedService from "../services/concatenated/concatenated.service";
-import DownloadService from "../services/download/download.service";
-import UploadService from "../services/upload/upload.service";
-import { YoutubeUploadVideoDetail } from "../types/Youtube.type";
-import { convertSecondsToHHMMSSString } from "../utilities/Time";
+import { Config } from "@/configs";
+import Python from "@/externals/python/python";
+import TwitchDl from "@/externals/twitch-dl/twitch-dl";
+import YtDlp from "@/externals/yt-dlp/yt-dlp";
+import ConcatenatedService from "@/services/concatenated/concatenated.service";
+import DownloadService from "@/services/download/download.service";
+import UploadService from "@/services/upload/upload.service";
+import { YoutubeUploadVideoDetail } from "@/types/Youtube.type";
+import { convertSecondsToHHMMSSString } from "@/utilities/Time";
+import FFmpeg from "@/externals/ffmpeg/ffmpeg";
 
 interface SourceVideoHighlight {
 	url: string;
