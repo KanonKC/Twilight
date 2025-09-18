@@ -9,7 +9,17 @@ import { VideoProfile } from "./response";
 import { Config } from "../../configs";
 import { existsSync } from "fs";
 
-export default class DownloadService {
+export abstract class IDownloadService {
+    abstract generateVideoProfile(filename: string, options?: DownloadVideoOptions): Promise<VideoProfile>;
+    abstract downloadTwitchVideo(url: string, options?: DownloadVideoOptions): Promise<DownloadedVideo>;
+    abstract downloadYoutubeVideo(url: string, options?: DownloadVideoOptions): Promise<DownloadedVideo>;
+    abstract getLocalVideo(url: string): Promise<DownloadedVideo | null>;
+    abstract downloadRange(url: string, options?: DownloadVideoOptions): Promise<DownloadedVideo>;
+    abstract extendDownloadedVideoData(downloadedVideo: DownloadedVideo): ExtendedDownloadedVideo;
+    abstract importLocalVideo(filename: string): Promise<DownloadedVideo | null>;
+}
+
+export default class DownloadService implements IDownloadService {
 	private ffmpeg: FFmpeg;
 	private twitchDl: TwitchDl;
 	private ytDlp: YtDlp;

@@ -1,7 +1,12 @@
+import { ConcatenatedVideo } from "@prisma/client";
 import FFmpeg from "../../externals/ffmpeg/ffmpeg";
 import { prisma } from "../../prisma";
 
-export default class ConcatenatedService {
+export abstract class IConcatenatedService {
+    abstract concatVideos(filenames: string[], title: string | undefined): Promise<ConcatenatedVideo>;
+}
+
+export default class ConcatenatedService implements IConcatenatedService {
 	
     private ffmpeg: FFmpeg;
     
@@ -9,7 +14,7 @@ export default class ConcatenatedService {
         this.ffmpeg = ffmpeg;
     }
 
-	async concatVideos(filenames: string[], title: string | undefined) {
+	async concatVideos(filenames: string[], title: string | undefined): Promise<ConcatenatedVideo> {
         const contributedVideo = await prisma.downloadedVideo.findMany({
 			where: {
 				filename: {
