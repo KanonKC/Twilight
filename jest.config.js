@@ -1,5 +1,5 @@
 module.exports = {
     preset: 'ts-jest',
-    modulePathIgnorePatterns: ['src/tests/','build/'],
+    modulePathIgnorePatterns: ['build/'],
     coveragePathIgnorePatterns: ['src/externals/']
 };
