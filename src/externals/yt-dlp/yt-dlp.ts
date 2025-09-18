@@ -1,12 +1,10 @@
 import { exec } from "child_process";
-import { Config } from "../../configs";
 import {
-	DownloadVideoOptions,
-	YoutubeVideo,
+    DownloadVideoOptions
 } from "../../types/DownloadVideo.type";
-import { getYoutubeVideoKey } from "../../utilities/Url";
 import { generateRandomString } from "../../utilities/String";
 import { convertHHMMSSStringToSeconds } from "../../utilities/Time";
+import { getYoutubeVideoKey } from "../../utilities/Url";
 import { DownloadYoutubeVideo } from "./response";
 
 export default class YtDlp {
@@ -39,6 +37,7 @@ export default class YtDlp {
 		let filename: string;
 		let command: string;
 		let timeRange = {};
+        let fileType = ".mp4";
 
 		let start: string | undefined;
 		let end: string | undefined;
@@ -55,42 +54,55 @@ export default class YtDlp {
 				height = options.resolution.height;
 			}
 		}
-        const path = options?.path || process.env.VIDEO_STORAGE_PATH || './';
+		const path = options?.path || process.env.VIDEO_STORAGE_PATH || "./";
 		const videoInfo = await this.getYoutubeVideoData(url);
 		// const baseCommand = `yt-dlp --paths "./${path}" -f "bestvideo+bestaudio[ext=mp4]/best" --merge-output-format mp4`
 		// const baseCommand = `yt-dlp --cookies-from-browser firefox --paths "./${path}" -f "bestvideo+bestaudio[ext=mp4]/best" --merge-output-format mp4`
-        // Claude-4: const baseCommand = `yt-dlp --cookies-from-browser firefox --paths "./${path}" -f "bestvideo[height=1080][fps=60]+bestaudio[ext=mp4]/bestvideo[height=1080]+bestaudio[ext=mp4]/best" --merge-output-format mp4`
-		
-        const baseCommand = `yt-dlp --cookies-from-browser firefox --paths "./${path}" --merge-output-format mp4`;
+		// Claude-4: const baseCommand = `yt-dlp --cookies-from-browser firefox --paths "./${path}" -f "bestvideo[height=1080][fps=60]+bestaudio[ext=mp4]/bestvideo[height=1080]+bestaudio[ext=mp4]/best" --merge-output-format mp4`
+
+		command = `yt-dlp --cookies-from-browser firefox --paths "./${path}"`;
+
+        if (!options?.audioOnly) {
+            command = `${command} --merge-output-format ${fileType.slice(1)}`;
+        } else {
+            fileType = "";
+            command = `${command} -x`;
+        }
 
 		if (start && end) {
 			const startText = start.split(":").join("_");
 			const endText = end.split(":").join("_");
 			filename = `youtube_${videoKey}_range_${startText}-${endText}_${generateRandomString(
 				4
-			)}.mp4`;
-			command = `${baseCommand} --download-sections "*${start}-${end}" "${videoKey}" -o "${filename}"`;
+			)}${fileType}`;
+			command = `${command} --download-sections "*${start}-${end}" `;
 			timeRange = {
 				startTime: convertHHMMSSStringToSeconds(start),
 				endTime: convertHHMMSSStringToSeconds(end),
 			};
 		} else {
-			filename = `youtube_${videoKey}_${generateRandomString(4)}.mp4`;
-			command = `${baseCommand} "${videoKey}" -o "${filename}"`;
+			filename = `youtube_${videoKey}_${generateRandomString(4)}${fileType}`;
 		}
 
-		if (true) {
-			// TODO: Handle IPv4 options flag
+		if (options?.ipv4) {
 			command = `${command} -4`;
 		}
 
-		console.log("[Yt-Dlp] Downloading Youtube Video with command: ", command)
+		command = `${command} "${videoKey}" -o "${filename}"`;
+
+		console.log(
+			"[Yt-Dlp] Downloading Youtube Video with command: ",
+			command
+		);
 
 		return new Promise((resolve, reject) => {
 			exec(command, async (error) => {
 				if (error) {
 					reject(error);
 				} else {
+                    if (options?.audioOnly) {
+                        filename = filename + ".opus";
+                    }
 					resolve({
 						id: videoKey,
 						title: videoInfo,

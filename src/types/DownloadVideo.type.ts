@@ -15,6 +15,7 @@ export interface DownloadVideoOptions {
     },
     ipv4?: boolean;
     path?: string;
+    audioOnly?: boolean;
 }
 
 export interface YoutubeVideo {

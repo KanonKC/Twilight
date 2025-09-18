@@ -29,8 +29,9 @@ export interface DownloadAndUploadVideoRequest {
 		resolution?: { width: number; height: number };
 		highlights?: Highlight[];
 		autoHighlights?: {
-            start: string;
-            end: string;
+            enable: boolean;
+            start?: string;
+            end?: string;
             threshold?: number;
         };
 		forceDownload?: boolean;
@@ -103,16 +104,17 @@ export default class DownloadAndUploadVideoScript {
 
 			let video: DownloadedVideo | null = null;
 
-			if (source.autoHighlights) {
+			if (source.autoHighlights?.enable) {
 				console.log(
 					`[Twilight] Auto-highlight is enabled, begin download a video ...`
 				);
 				video = await this.ds.downloadRange(source.url, {
-                    range: {
+                    ...(source.autoHighlights.start && source.autoHighlights.end && {range: {
                         start: source.autoHighlights.start,
                         end: source.autoHighlights.end,
-                    },
+                    }}),
 					resolution: source.resolution,
+                    audioOnly: true,
 				});
 				console.log(
 					`[Twilight] Download video success! (${video.filename})`
