@@ -1,6 +1,5 @@
-import { exec } from "child_process";
-import { YoutubeUploadVideoDetail } from "../../types/Youtube.type";
 import Python from "../../externals/python/python";
+import { YoutubeUploadVideoDetail } from "../../types/Youtube.type";
 
 export default class UploadService {
 	private python: Python;

@@ -1,14 +1,12 @@
-import { DownloadedVideo } from "@prisma/client";
 import FFmpeg from "../../externals/ffmpeg/ffmpeg";
-import { Config } from "../../configs";
 import { prisma } from "../../prisma";
 
 export default class ConcatenatedService {
 	
     private ffmpeg: FFmpeg;
     
-    constructor(config: Config) {
-        this.ffmpeg = new FFmpeg(config);
+    constructor(ffmpeg: FFmpeg) {
+        this.ffmpeg = ffmpeg;
     }
 
 	async concatVideos(filenames: string[], title: string | undefined) {

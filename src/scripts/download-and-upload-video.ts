@@ -71,7 +71,7 @@ export default class DownloadAndUploadVideoScript {
 			this.ytDlp,
 			config
 		);
-		this.cs = new ConcatenatedService(config);
+		this.cs = new ConcatenatedService(this.ffmpeg);
 		this.us = new UploadService(this.python);
 	}
 
