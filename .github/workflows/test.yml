@@ -27,26 +27,11 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
-    - name: Verify project structure
-      run: |
-        echo "Project structure:"
-        ls -la
-        echo "TypeScript config:"
-        cat tsconfig.json | head -20
-
     - name: Run tests
       run: npm run test
 
     - name: Run build
-      run: |
-        echo "Current directory: $(pwd)"
-        echo "Files in current directory:"
-        ls -la
-        echo "Checking for tsconfig.json:"
-        ls -la tsconfig.json || echo "tsconfig.json not found"
-        echo "Running TypeScript compiler directly:"
-        npx tsc --version
-        npx tsc -p ./tsconfig.json
+      run: npm run build
 
     - name: Upload coverage reports
       if: matrix.node-version == '20.x'
