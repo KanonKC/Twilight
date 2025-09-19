@@ -1,8 +1,11 @@
-import { exec } from "child_process";
-import { YoutubeUploadVideoDetail } from "../../types/Youtube.type";
 import Python from "../../externals/python/python";
+import { YoutubeUploadVideoDetail } from "../../types/Youtube.type";
 
-export default class UploadService {
+export abstract class IUploadService {
+    abstract uploadYoutubeVideo(filePath: string, options: YoutubeUploadVideoDetail): Promise<{ videoId: string }>;
+}
+
+export default class UploadService implements IUploadService {
 	private python: Python;
 	constructor(python: Python) {
 		this.python = python;
@@ -12,9 +15,9 @@ export default class UploadService {
 		filePath: string,
 		{
 			title,
-			description = "",
+			description = '',
 			tags = [],
-			privacyStatus = "unlisted",
+			privacyStatus = 'unlisted',
 		}: YoutubeUploadVideoDetail
 	): Promise<{
 		videoId: string;

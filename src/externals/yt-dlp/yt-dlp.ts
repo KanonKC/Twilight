@@ -9,7 +9,12 @@ import { generateRandomString } from "../../utilities/String";
 import { convertHHMMSSStringToSeconds } from "../../utilities/Time";
 import { DownloadYoutubeVideo } from "./response";
 
-export default class YtDlp {
+export abstract class IYtDlp {
+    abstract getYoutubeVideoData(url: string): Promise<string>;
+    abstract downloadYoutubeVideo(url: string, options?: DownloadVideoOptions): Promise<DownloadYoutubeVideo>;
+}
+
+export default class YtDlp implements IYtDlp {
 	constructor() {}
 
 	async getYoutubeVideoData(url: string): Promise<string> {

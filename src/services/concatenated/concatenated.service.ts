@@ -1,41 +1,36 @@
-import { DownloadedVideo } from "@prisma/client";
-import FFmpeg from "../../externals/ffmpeg/ffmpeg";
-import { Config } from "../../configs";
-import { prisma } from "../../prisma";
+import { ConcatenatedVideo } from '@prisma/client';
+import FFmpeg from '../../externals/ffmpeg/ffmpeg';
+import ConcatenatedVideoRepository from '../../repositories/concatenated/concatenated.repository';
+import DownloadedVideoRepository from '../../repositories/download/download.repository';
+import { CreateConcatenatedVideo } from '../../repositories/concatenated/response';
 
-export default class ConcatenatedService {
-	
+export abstract class IConcatenatedService {
+    abstract concatVideos(filenames: string[], title: string | undefined): Promise<ConcatenatedVideo>;
+}
+
+export default class ConcatenatedService implements IConcatenatedService {
     private ffmpeg: FFmpeg;
-    
-    constructor(config: Config) {
-        this.ffmpeg = new FFmpeg(config);
+    private concatRepo: ConcatenatedVideoRepository;
+    private downloadRepo: DownloadedVideoRepository;
+
+    constructor(ffmpeg: FFmpeg, concatRepo: ConcatenatedVideoRepository, downloadRepo: DownloadedVideoRepository) {
+        this.ffmpeg = ffmpeg;
+        this.concatRepo = concatRepo;
+        this.downloadRepo = downloadRepo;
     }
 
-	async concatVideos(filenames: string[], title: string | undefined) {
-        const contributedVideo = await prisma.downloadedVideo.findMany({
-			where: {
-				filename: {
-					in: filenames,
-				},
-			},
-		});
-
+    async concatVideos(filenames: string[], title: string | undefined): Promise<ConcatenatedVideo> {
+        
+        const contributedVideo = await this.downloadRepo.getByFilenames(filenames);
         const filename = await this.ffmpeg.concatVideo(filenames, title);
-    
-        const result = await prisma.concatenatedVideo.create({
-            data: {
-                title:
-                    title ?? filename,
-                filename: filename,
-                downloadedVideos: {
-                    createMany: {
-                        data: contributedVideo.map((video) => ({
-                            downloadedVideoId: video.id,
-                        })),
-                    },
-                },
-            },
-        });
+
+        const r: CreateConcatenatedVideo = {
+            title: title ?? filename,
+            filename: filename,
+            videoIds: contributedVideo.map((video) => video.id),
+        }
+
+        const result = await this.concatRepo.create(r);
 
         return result;
     }

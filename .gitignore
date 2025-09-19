@@ -4,7 +4,9 @@ node_modules/
 *.mp4
 *.txt
 *.mkv
-*.json
+*.opus
+*.stackdump
+*.part
 .env
 build
 
@@ -15,5 +17,10 @@ dumps/*.mp4
 dumps/*.tmp
 dumps/*.part
 dumps/*.ytdl
+dumps/twitch-chat/*.json
 dumps/audio-spike-graph/*.png
 app/
+coverage/
+
+client_secret.json
+youtube-oauth2.json

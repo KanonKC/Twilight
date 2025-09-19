@@ -20,8 +20,8 @@ model DownloadedVideo {
     platformId          String
     url                 String
     title               String?
-    width               Int
-    height              Int
+    width               Int?
+    height              Int?
     startTime           Int?
     endTime             Int?
     duration            Int

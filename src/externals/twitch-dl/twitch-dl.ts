@@ -4,7 +4,12 @@ import { convertHHMMSSStringToSeconds } from "../../utilities/Time";
 import { DownloadVideoOptions, TwitchVideo } from "../../types/DownloadVideo.type";
 import { DownloadTwitchVideo } from "./response";
 
-export default class TwitchDl {
+export abstract class ITwitchDl {
+    abstract downloadTwitchVideo(url: string, options?: DownloadVideoOptions): Promise<DownloadTwitchVideo>;
+    abstract getTwitchVideoData(url: string): Promise<TwitchVideo>;
+}
+
+export default class TwitchDl implements ITwitchDl {
 
     constructor() {}
 

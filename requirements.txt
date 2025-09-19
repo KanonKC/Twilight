@@ -2,4 +2,4 @@ twitch-dl==2.8.1
 numpy==1.26.3
 # librosa==0.10.0
 matplotlib==3.7.2
-yt-dlp==2025.08.11
+yt-dlp==2025.08.27
