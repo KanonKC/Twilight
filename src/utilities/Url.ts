@@ -5,7 +5,12 @@ export function getYoutubeVideoKey(url:string):string {
     - https://www.youtube.com/watch?v=videoId
     - https://www.youtube.com/live/videoId
     - https://youtu.be/videoId?list=playlistId
+    - www.youtube.com/watch?v=videoId
     */
+
+    if (url.startsWith("www.")) {
+        url = "https://" + url
+    }
 
     if (url.includes("v=")) {
         const urlParams = new URLSearchParams(new URL(url).search);
