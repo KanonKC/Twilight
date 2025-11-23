@@ -3,7 +3,7 @@ import FFmpeg from '../../externals/ffmpeg/ffmpeg';
 import TwitchDl from '../../externals/twitch-dl/twitch-dl';
 import YtDlp from '../../externals/yt-dlp/yt-dlp';
 import { DownloadVideoOptions, ExtendedDownloadedVideo } from '../../types/DownloadVideo.type';
-import { convertHHMMSSStringToSeconds } from '../../utilities/Time';
+import { convertHHMMSSStringToSeconds, convertSecondsToHHMMSSString } from '../../utilities/Time';
 import { VideoProfile } from './response';
 import { Config } from '../../configs';
 import { existsSync } from 'fs';
@@ -17,6 +17,7 @@ export abstract class IDownloadService {
     abstract downloadRange(url: string, options?: DownloadVideoOptions): Promise<DownloadedVideo>;
     abstract extendDownloadedVideoData(downloadedVideo: DownloadedVideo): ExtendedDownloadedVideo;
     abstract importLocalVideo(filename: string): Promise<DownloadedVideo | null>;
+    abstract restoreVideo(id: number): Promise<DownloadedVideo>
 }
 
 export default class DownloadService implements IDownloadService {
@@ -195,5 +196,29 @@ export default class DownloadService implements IDownloadService {
             height: profile.height,
             duration: profile.duration,
         });
+    }
+
+    async restoreVideo(id: number): Promise<DownloadedVideo> {
+        const video = await this.downloadRepo.get(id)
+        if (!video) {
+            throw new Error("Video not found")
+        }
+        const options: DownloadVideoOptions = {}
+
+        if (video.startTime && video.endTime) {
+            options.range = {
+                start: convertSecondsToHHMMSSString(video.startTime),
+                end: convertSecondsToHHMMSSString(video.endTime)
+            }
+        }
+
+        if (video.height && video.width) {
+            options.resolution = {
+                width: video.width,
+                height: video.height
+            }
+        }
+
+        return this.downloadRange(video.url, options)
     }
 }
