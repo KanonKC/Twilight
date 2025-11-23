@@ -4,4 +4,5 @@ export interface YoutubeUploadVideoDetail {
     tags?: string[];
     privacyStatus?: "public" | "private" | "unlisted";
     includeTwitchChat?: boolean;
+    onUploadSuccess?: (videoId: string) => void;
 }
