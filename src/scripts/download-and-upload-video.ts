@@ -191,16 +191,7 @@ export default class DownloadAndUploadVideoScript {
                     description: (payload.youtube.description || '') + '\n' + referenceDescription,
                 });
                 response.youtubeVideoId = youtubeUploadResponse.videoId;
-                const webhookUrl = 'https://discord.com/api/webhooks/1408156500525842452/6-KBd8sH1s7lTHfJxb1pvXzqAbbaLBAUbfGzx7LWmkK4iG3HzfsvIl7XIfg2izZu4XL8';
-                fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        content: `New Video Uploaded! https://www.youtube.com/watch?v=${youtubeUploadResponse.videoId}`,
-                    }),
-                });
+                payload.youtube.onUploadSuccess?.(youtubeUploadResponse.videoId);
             }
         }
 
