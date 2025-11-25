@@ -2,6 +2,7 @@ import { DownloadedVideo, PrismaClient } from '@prisma/client';
 import { CreateDownloadedVideo } from './response';
 
 export abstract class IDownloadedVideoRepository {
+    abstract get(id: number): Promise<DownloadedVideo | null>
     abstract create(r: CreateDownloadedVideo): Promise<DownloadedVideo>;
     abstract getByFilename(filename: string): Promise<DownloadedVideo | null>;
     abstract getByFilenames(filenames: string[]): Promise<DownloadedVideo[]>;
@@ -13,6 +14,14 @@ export default class DownloadedVideoRepository implements IDownloadedVideoReposi
 
     constructor(prisma: PrismaClient) {
         this.prisma = prisma;
+    }
+
+    get(id: number): Promise<DownloadedVideo | null> {
+        return this.prisma.downloadedVideo.findUnique({
+            where: {
+                id
+            }
+        })
     }
 
     create(r: CreateDownloadedVideo): Promise<DownloadedVideo> {
