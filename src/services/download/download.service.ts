@@ -17,7 +17,7 @@ export abstract class IDownloadService {
     abstract downloadRange(url: string, options?: DownloadVideoOptions): Promise<DownloadedVideo>;
     abstract extendDownloadedVideoData(downloadedVideo: DownloadedVideo): ExtendedDownloadedVideo;
     abstract importLocalVideo(filename: string): Promise<DownloadedVideo | null>;
-    abstract restoreVideo(id: number): Promise<DownloadedVideo>
+    abstract recoverVideo(id: number): Promise<DownloadedVideo>
 }
 
 export default class DownloadService implements IDownloadService {
@@ -43,6 +43,7 @@ export default class DownloadService implements IDownloadService {
         let profileWidth = resolution.width;
         let profileHeight = resolution.height;
 
+        // TODO: Change this section of code to post download process
         if (options?.resolution) {
             if (resolution.width !== options.resolution.width || resolution.height !== options.resolution.height) {
                 const resizedFilename = await this.ffmpeg.resizeVideo(filename, options.resolution.width, options.resolution.height);
@@ -69,7 +70,7 @@ export default class DownloadService implements IDownloadService {
 
         let startTime: number | undefined;
         let endTime: number | undefined;
-        if (options?.range) {
+        if (options?.range && options.range.start && options.range.end) {
             startTime = convertHHMMSSStringToSeconds(options.range.start);
             endTime = convertHHMMSSStringToSeconds(options.range.end);
         }
@@ -99,7 +100,7 @@ export default class DownloadService implements IDownloadService {
 
         let startTime: number | undefined;
         let endTime: number | undefined;
-        if (options?.range) {
+        if (options?.range && options.range.start && options.range.end) {
             startTime = convertHHMMSSStringToSeconds(options.range.start);
             endTime = convertHHMMSSStringToSeconds(options.range.end);
         }
@@ -198,27 +199,27 @@ export default class DownloadService implements IDownloadService {
         });
     }
 
-    async restoreVideo(id: number): Promise<DownloadedVideo> {
-        const video = await this.downloadRepo.get(id)
+    async recoverVideo(id: number): Promise<DownloadedVideo> {
+        const video = await this.downloadRepo.get(id);
         if (!video) {
-            throw new Error("Video not found")
+            throw new Error('Video not found');
         }
-        const options: DownloadVideoOptions = {}
+        const downloaded = this.downloadRange(video.url, {
+            ...(video.startTime && video.endTime && {range: {
+                start: video.startTime ? convertSecondsToHHMMSSString(video.startTime) : '',
+                end: video.endTime ? convertSecondsToHHMMSSString(video.endTime) : '',
+            }}),
+            ...(video.width &&
+                video.height && {
+                    resolution: {
+                        width: video.width,
+                        height: video.height,
+                    },
+                }),
+            ipv4: true,
+            path: 'dumps',
+        });
 
-        if (video.startTime && video.endTime) {
-            options.range = {
-                start: convertSecondsToHHMMSSString(video.startTime),
-                end: convertSecondsToHHMMSSString(video.endTime)
-            }
-        }
-
-        if (video.height && video.width) {
-            options.resolution = {
-                width: video.width,
-                height: video.height
-            }
-        }
-
-        return this.downloadRange(video.url, options)
+        return downloaded;
     }
 }

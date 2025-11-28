@@ -1,5 +1,6 @@
 import { DownloadedVideo, PrismaClient } from '@prisma/client';
 import { CreateDownloadedVideo } from './response';
+import { DownloadedVideoListFilters } from './request';
 
 export abstract class IDownloadedVideoRepository {
     abstract get(id: number): Promise<DownloadedVideo | null>
@@ -20,8 +21,18 @@ export default class DownloadedVideoRepository implements IDownloadedVideoReposi
         return this.prisma.downloadedVideo.findUnique({
             where: {
                 id
-            }
-        })
+            },
+        });
+    }
+
+    list(filters: DownloadedVideoListFilters): Promise<DownloadedVideo[]> {
+        return this.prisma.downloadedVideo.findMany({
+            where: {
+                createdAt: {
+                    gte: filters.after ?? new Date(0),
+                },
+            },
+        });
     }
 
     create(r: CreateDownloadedVideo): Promise<DownloadedVideo> {

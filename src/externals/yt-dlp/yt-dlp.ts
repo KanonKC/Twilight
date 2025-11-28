@@ -47,18 +47,15 @@ export default class YtDlp implements IYtDlp {
 
 		let start: string | undefined;
 		let end: string | undefined;
-		let width: number | undefined;
-		let height: number | undefined;
-
+        let fileType = 'mp4';
 		if (options) {
 			if (options.range) {
 				start = options.range.start;
 				end = options.range.end;
 			}
-			if (options.resolution) {
-				width = options.resolution.width;
-				height = options.resolution.height;
-			}
+            if (options.audioOnly) {
+                fileType = 'mp3';
+            }
 		}
         const path = options?.path || process.env.VIDEO_STORAGE_PATH || './';
 		const videoInfo = await this.getYoutubeVideoData(url);
@@ -66,23 +63,25 @@ export default class YtDlp implements IYtDlp {
 		// const baseCommand = `yt-dlp --cookies-from-browser firefox --paths "./${path}" -f "bestvideo+bestaudio[ext=mp4]/best" --merge-output-format mp4`
         // Claude-4: const baseCommand = `yt-dlp --cookies-from-browser firefox --paths "./${path}" -f "bestvideo[height=1080][fps=60]+bestaudio[ext=mp4]/bestvideo[height=1080]+bestaudio[ext=mp4]/best" --merge-output-format mp4`
 		
-        const baseCommand = `yt-dlp --cookies-from-browser firefox --paths "./${path}" --merge-output-format mp4`;
+        const baseCommand = `yt-dlp --cookies-from-browser firefox --paths "./${path}" --merge-output-format ${fileType}`;
 
 		if (start && end) {
 			const startText = start.split(":").join("_");
 			const endText = end.split(":").join("_");
 			filename = `youtube_${videoKey}_range_${startText}-${endText}_${generateRandomString(
 				4
-			)}.mp4`;
+			)}`;
 			command = `${baseCommand} --download-sections "*${start}-${end}" "${videoKey}" -o "${filename}"`;
 			timeRange = {
 				startTime: convertHHMMSSStringToSeconds(start),
 				endTime: convertHHMMSSStringToSeconds(end),
 			};
 		} else {
-			filename = `youtube_${videoKey}_${generateRandomString(4)}.mp4`;
+			filename = `youtube_${videoKey}_${generateRandomString(4)}`;
 			command = `${baseCommand} "${videoKey}" -o "${filename}"`;
 		}
+
+        filename = `${filename}.${fileType}`;
 
 		if (true) {
 			// TODO: Handle IPv4 options flag
