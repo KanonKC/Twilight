@@ -14,38 +14,38 @@ datasource db {
 }
 
 model DownloadedVideo {
-    id                  Int      @id @default(autoincrement())
-    filename            String   @unique
-    platform            String
-    platformId          String
-    url                 String
-    title               String?
-    width               Int?
-    height              Int?
-    startTime           Int?
-    endTime             Int?
-    duration            Int
-    createdAt           DateTime @default(now())
-    updatedAt           DateTime @updatedAt
-    concatVideos        DownloadedConcatenatedVideo[]
+    id           Int                           @id @default(autoincrement())
+    filename     String                        @unique
+    platform     String
+    platformId   String
+    url          String
+    title        String?
+    width        Int?
+    height       Int?
+    startTime    Int?
+    endTime      Int?
+    duration     Int
+    createdAt    DateTime                      @default(now())
+    updatedAt    DateTime                      @updatedAt
+    concatVideos DownloadedConcatenatedVideo[]
 }
 
 model ConcatenatedVideo {
-    id          Int      @id @default(autoincrement())
-    title       String?
-    filename    String   @unique
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
+    id               Int                           @id @default(autoincrement())
+    title            String?
+    filename         String                        @unique
+    createdAt        DateTime                      @default(now())
+    updatedAt        DateTime                      @updatedAt
     downloadedVideos DownloadedConcatenatedVideo[]
 }
 
 model DownloadedConcatenatedVideo {
-    downloadedVideo     DownloadedVideo @relation(fields: [downloadedVideoId], references: [id])
+    downloadedVideo     DownloadedVideo   @relation(fields: [downloadedVideoId], references: [id])
     downloadedVideoId   Int
     concatenatedVideo   ConcatenatedVideo @relation(fields: [concatenatedVideoId], references: [id])
     concatenatedVideoId Int
-    createdAt           DateTime @default(now())
-    updatedAt           DateTime @updatedAt
+    createdAt           DateTime          @default(now())
+    updatedAt           DateTime          @updatedAt
 
     @@id([downloadedVideoId, concatenatedVideoId])
 }
