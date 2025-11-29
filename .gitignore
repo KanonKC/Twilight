@@ -24,3 +24,5 @@ coverage/
 
 client_secret.json
 youtube-oauth2.json
+
+*.csv
