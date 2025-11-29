@@ -31,6 +31,7 @@ export interface DownloadAndUploadVideoRequest {
     sources: {
         url: string;
         resolution?: { width: number; height: number };
+        customFormat?: string;
         highlights?: Highlight[];
         autoHighlights?: {
             start: string;
@@ -112,6 +113,7 @@ export default class DownloadAndUploadVideoScript {
                         end: source.autoHighlights.end,
                     },
                     resolution: source.resolution,
+                    customFormat: source.customFormat,
                 });
                 console.log(`[Twilight] Download video success! (${video.filename})`);
 

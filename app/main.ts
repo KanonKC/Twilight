@@ -14,17 +14,59 @@ function sendDiscordWebhook(key: string) {
     });
 }
 
+// const payload: DownloadAndUploadVideoRequest = {
+// 	sources: [
+// 		{
+// 			url: "https://www.youtube.com/live/_RwQbNrR26U",
+//             highlights: [
+//                 {
+//                     start: "17:46",
+//                     end: "18:19"
+//                 },
+//                 {
+//                     start: "25:52",
+//                     end: "27:11"
+//                 }
+//             ]
+// 		},
+// 		{
+// 			url: "https://www.youtube.com/live/_RwQbNrR26U",
+//             highlights: [
+//                 {
+//                     start: "7:42",
+//                     end: "8:07"
+//                 }
+//             ]
+// 		},
+// 	],
+//     concat: true,
+// 	// youtube: {
+// 	// 	title: "Hollow Knight - The Hollow Knight + The Radiance (Dream No More Ending)",
+// 	// 	privacyStatus: "public"
+// 	// }
+// };
 const payload: DownloadAndUploadVideoRequest = {
-    sources: [
-        {
-            url: 'https://youtu.be/YQ_7zwxJezU',
-        },
-    ],
-    youtube: {
-    	title: "Test Upload",
-    	privacyStatus: "unlisted",
-		onUploadSuccess: sendDiscordWebhook
-    }
+	sources: [
+		{
+			url: "https://www.youtube.com/live/ZYfaKv7eqF0",
+            highlights: [
+                {
+                    start: "12:36",
+                    end: "15:00"
+                }
+                // {
+                //     start: "0:28",
+                //     end: "17:17"
+                // }
+            ],
+            // customFormat: "bestvideo[height=144]+bestaudio/best[height=144]"
+		},
+	],
+    // concat: true,
+	// youtube: {
+	// 	title: "Hollow Knight - Sister of Battle (Radiant + Nail Only)",
+	// 	privacyStatus: "public"
+	// }
 };
 const duv = new DownloadAndUploadVideoScript(config);
 duv.do(payload).then(console.log);

@@ -15,8 +15,8 @@ const twitchDl = new TwitchDl();
 const downloadService = new DownloadService(twitchDl, ffmpeg, ytDlp, config, downloadRepo);
 
 (async () => {
-    const video = await downloadService.downloadYoutubeVideo("https://www.youtube.com/watch?v=5fn262FBt5Q&list=RDNACUbbhDdx8&index=2", {
-        audioOnly: true,
+    const video = await ytDlp.downloadYoutubeVideo("https://www.youtube.com/watch?v=5fn262FBt5Q&list=RDNACUbbhDdx8&index=2", {
+        customFormat: "bestvideo[height=144]+bestaudio/best[height=144]",
     });
     console.log(video);
 })()
