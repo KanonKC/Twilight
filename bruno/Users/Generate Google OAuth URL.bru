@@ -1,0 +1,16 @@
+meta {
+  name: Generate Google OAuth URL
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{endpoint}}/api/v1/google-auth/url
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
