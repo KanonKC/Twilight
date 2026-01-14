@@ -1,20 +1,20 @@
 import { DownloadedVideo } from '@prisma/client';
 import DownloadService from './download.service';
-import FFmpeg from '../../externals/ffmpeg/ffmpeg';
-import TwitchDl from '../../externals/twitch-dl/twitch-dl';
-import YtDlp from '../../externals/yt-dlp/yt-dlp';
+import FFmpeg from '../../providers/ffmpeg/ffmpeg.provider';
+import TwitchDl from '../../providers/twitch-dl/twitch-dl.provider';
+import YtDlp from '../../providers/yt-dlp/yt-dlp.provider';
 import DownloadedVideoRepository from '../../repositories/download/download.repository';
 import { Config } from '../../configs';
 import { DownloadVideoOptions, ExtendedDownloadedVideo, TwitchVideo } from '../../types/DownloadVideo.type';
 import { VideoProfile } from './response';
-import { DownloadTwitchVideo } from '../../externals/twitch-dl/response';
-import { DownloadYoutubeVideo } from '../../externals/yt-dlp/response';
+import { DownloadTwitchVideo } from '../../providers/twitch-dl/response';
+import { DownloadYoutubeVideo } from '../../providers/yt-dlp/response';
 import * as fs from 'fs';
 
 // Mock the dependencies
-jest.mock('../../externals/ffmpeg/ffmpeg');
-jest.mock('../../externals/twitch-dl/twitch-dl');
-jest.mock('../../externals/yt-dlp/yt-dlp');
+jest.mock('../../providers/ffmpeg/ffmpeg.provider');
+jest.mock('../../providers/twitch-dl/twitch-dl.provider');
+jest.mock('../../providers/yt-dlp/yt-dlp.provider');
 jest.mock('../../repositories/download/download.repository');
 jest.mock('fs');
 

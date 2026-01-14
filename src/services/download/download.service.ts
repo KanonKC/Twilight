@@ -1,7 +1,7 @@
 import { DownloadedVideo } from '@prisma/client';
-import FFmpeg from '../../externals/ffmpeg/ffmpeg';
-import TwitchDl from '../../externals/twitch-dl/twitch-dl';
-import YtDlp from '../../externals/yt-dlp/yt-dlp';
+import FFmpeg from '../../providers/ffmpeg/ffmpeg.provider';
+import TwitchDl from '../../providers/twitch-dl/twitch-dl.provider';
+import YtDlp from '../../providers/yt-dlp/yt-dlp.provider';
 import { DownloadVideoOptions, ExtendedDownloadedVideo } from '../../types/DownloadVideo.type';
 import { convertHHMMSSStringToSeconds, convertSecondsToHHMMSSString } from '../../utilities/Time';
 import { VideoProfile } from './response';

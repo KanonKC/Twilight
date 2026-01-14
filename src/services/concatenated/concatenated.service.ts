@@ -1,5 +1,5 @@
 import { ConcatenatedVideo } from '@prisma/client';
-import FFmpeg from '../../externals/ffmpeg/ffmpeg';
+import FFmpeg from '../../providers/ffmpeg/ffmpeg.provider';
 import ConcatenatedVideoRepository from '../../repositories/concatenated/concatenated.repository';
 import DownloadedVideoRepository from '../../repositories/download/download.repository';
 import { CreateConcatenatedVideo } from '../../repositories/concatenated/response';

@@ -1,12 +1,12 @@
 import { ConcatenatedVideo, DownloadedVideo } from '@prisma/client';
 import ConcatenatedService from './concatenated.service';
-import FFmpeg from '../../externals/ffmpeg/ffmpeg';
+import FFmpeg from '../../providers/ffmpeg/ffmpeg.provider';
 import ConcatenatedVideoRepository from '../../repositories/concatenated/concatenated.repository';
 import DownloadedVideoRepository from '../../repositories/download/download.repository';
 import { CreateConcatenatedVideo } from '../../repositories/concatenated/response';
 
 // Mock the dependencies
-jest.mock('../../externals/ffmpeg/ffmpeg');
+jest.mock('../../providers/ffmpeg/ffmpeg.provider');
 jest.mock('../../repositories/concatenated/concatenated.repository');
 jest.mock('../../repositories/download/download.repository');
 

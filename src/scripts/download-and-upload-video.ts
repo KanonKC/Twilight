@@ -1,9 +1,9 @@
 import { ConcatenatedVideo, DownloadedVideo, PrismaClient } from '@prisma/client';
 import { Config } from '../configs';
-import FFmpeg from '../externals/ffmpeg/ffmpeg';
-import Python from '../externals/python/python';
-import TwitchDl from '../externals/twitch-dl/twitch-dl';
-import YtDlp from '../externals/yt-dlp/yt-dlp';
+import FFmpeg from '../providers/ffmpeg/ffmpeg.provider';
+import Python from '../providers/python/python.provider';
+import TwitchDl from '../providers/twitch-dl/twitch-dl.provider';
+import YtDlp from '../providers/yt-dlp/yt-dlp.provider';
 import ConcatenatedService from '../services/concatenated/concatenated.service';
 import DownloadService from '../services/download/download.service';
 import UploadService from '../services/upload/upload.service';

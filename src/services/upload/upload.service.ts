@@ -1,4 +1,4 @@
-import Python from "../../externals/python/python";
+import Python from "../../providers/python/python.provider";
 import { YoutubeUploadVideoDetail } from "../../types/Youtube.type";
 
 export abstract class IUploadService {
